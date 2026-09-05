@@ -154,6 +154,15 @@ real price list, so use driver/constructor names EXACTLY as they appear in the \
 ALL DRIVER PRICES / ALL CONSTRUCTOR PRICES lists above -- no extra text, no \
 team name appended to a driver's name.
 - Pick one of your 5 drivers as Captain (gets the DRS Boost -- doubled score).
+- Weight a driver's IMMEDIATE recent form (their last 1-2 races) at least as \
+heavily as their season-long championship position. A held-out backtest of \
+this exact reasoning process against the previous race (Dutch GP, Zandvoort) \
+found it correctly identified the competitive group (5/6 top-6 overlap) but \
+picked the wrong race winner specifically because it discounted a driver's \
+just-happened win as "a one-off rather than sustained pace" -- that driver \
+went on to win again. Don't make that mistake: a driver currently on a \
+multi-race win streak should be treated as a genuine momentum signal, not \
+explained away in favor of a more "consistent" season-long points leader.
 
 Reply in EXACTLY this format, with no extra commentary before or after:
 
@@ -340,10 +349,18 @@ def build_graph():
     return graph.compile()
 
 
-def run_team_builder(question: str) -> str:
+def run_team_builder_full(question: str) -> dict:
+    """Returns the full graph result (drivers, constructors, captain, cost,
+    reasoning, live_conditions, etc.), not just the formatted string -- callers
+    that need structured data (e.g. eval/predictions_tracker.py, to persist a
+    prediction record for later scoring against the real result) should use
+    this instead of run_team_builder."""
     app = build_graph()
-    result = app.invoke({"question": question, "retries": 0, "validation_errors": []})
-    return result["final_team"]
+    return app.invoke({"question": question, "retries": 0, "validation_errors": []})
+
+
+def run_team_builder(question: str) -> str:
+    return run_team_builder_full(question)["final_team"]
 
 
 if __name__ == "__main__":

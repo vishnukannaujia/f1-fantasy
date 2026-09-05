@@ -64,32 +64,45 @@ data fetched at run time, not baked into the corpus (see ARCHITECTURE.md for why
 
 ## Evaluating it
 
+Five layers, one per script under `eval/` -- see **[ARCHITECTURE.md § Evals](ARCHITECTURE.md#evals----purpose-usage-and-what-each-one-actually-checks)**
+for the full table of what each checks and the current pass/fail numbers. Quick reference:
+
 ```bash
-python eval/eval_chunking.py
+python eval/eval_chunking.py             # chunking: structural checks + recall@k (currently recall@4=100%)
+python eval/eval_team_builder_logic.py   # parsing + budget-math unit checks, no LLM calls (19/19 pass)
+python eval/eval_generation.py           # does the final ANSWER state the right fact, not just retrieval (10/10 pass)
+python eval/eval_prediction_backtest.py  # held-out: predict a past race, score vs. the real result
+python eval/predictions_tracker.py summary   # track record across every race scored so far
 ```
 
-Two layers: fast structural checks on the chunking functions themselves (no embeddings needed), and a
-recall@k retrieval eval against 15 hand-labeled real questions -- including two "collision" cases
-(sprint vs. race DNF penalty, sprint vs. race fastest-lap bonus) built specifically to stress-test
-whether near-duplicate facts get disambiguated correctly. Currently: **recall@4 = 100%** (k=4 is the
-production default in `chains.py`).
+`eval/eval_chunking.py` includes two "collision" cases (sprint vs. race DNF penalty, sprint vs. race
+fastest-lap bonus) built specifically to stress-test whether near-duplicate facts get disambiguated
+correctly. `eval/eval_prediction_backtest.py` and `predictions_tracker.py` together turn a one-off
+backtest into an ongoing practice: predictions are saved to `predictions/*.json` before a race, then
+scored against the real result afterward, building a real (not n=1) calibration dataset over the season.
 
 ## Project layout
 
 ```
-data/raw/               current F1 2026 season corpus (rules, prices, standings, form, circuit notes)
-src/ingest.py            chunk (paragraph-level + row-level) + embed + persist to Chroma
-src/f1_data.py           shared price-line parser (used by ingest.py and team_builder.py)
-src/chains.py            plain LangChain RAG chain: single-fact Q&A
-src/team_builder.py      LangGraph: budget-constrained team recommendation
-eval/eval_chunking.py    structural + retrieval-quality eval for the chunking layer
-chroma_db/               persisted vector store (gitignored, created by ingest.py)
-ARCHITECTURE.md          diagram + design rationale + known gaps (living doc)
+data/raw/                 current F1 2026 season corpus (rules, prices, standings, form, circuit notes)
+predictions/               saved pre-race predictions, scored against real results after each race
+src/ingest.py              chunk (paragraph-level + row-level) + embed + persist to Chroma
+src/f1_data.py             shared price-line parser (used by ingest.py and team_builder.py)
+src/chains.py              plain LangChain RAG chain: single-fact Q&A
+src/team_builder.py        LangGraph: budget-constrained team recommendation
+eval/eval_chunking.py      structural + retrieval-quality eval for the chunking layer
+eval/eval_team_builder_logic.py   unit checks for proposal parsing + budget validation
+eval/eval_generation.py    generation-quality eval (answer correctness, not just retrieval)
+eval/eval_prediction_backtest.py  held-out race-outcome backtest
+eval/predictions_tracker.py       save/score predictions against real results, ongoing
+chroma_db/                 persisted vector store (gitignored, created by ingest.py)
+ARCHITECTURE.md            diagram + design rationale + chunking sizes + eval details + known gaps
 ```
 
 ## Known gaps
 
 See **[ARCHITECTURE.md § Known gaps](ARCHITECTURE.md#known-gaps-honest-as-of-last-update)** for the
 current honest list -- as of last update: no automated weekly data refresh, the standings file is
-missing the full driver order beyond the top 2, no generation-quality eval yet (only retrieval is
-formally eval'd), and no hardening against indirect prompt injection via live web search content.
+missing the full driver order beyond the top 2, the backtest-driven prompt fix hasn't been re-validated
+against a second race, no hardening against indirect prompt injection via live web search content, and
+no web UI yet (CLI/script only).

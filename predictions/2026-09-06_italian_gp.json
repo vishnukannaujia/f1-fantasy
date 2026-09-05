@@ -1,0 +1,49 @@
+{
+  "race": "2026 Italian Grand Prix",
+  "circuit": "Autodromo Nazionale Monza",
+  "race_date": "2026-09-06",
+  "predicted_at": "2026-09-05",
+  "budget_cap": 100.0,
+  "formations": [
+    {
+      "label": "SAFE / CONSISTENT",
+      "drivers": ["Lando Norris", "George Russell", "Lewis Hamilton", "Fernando Alonso", "Nico Hulkenberg"],
+      "constructors": ["Racing Bulls", "Cadillac F1 Team"],
+      "captain": "Lando Norris",
+      "total_cost": 98.8,
+      "confidence_pct": 65,
+      "reasoning": "Norris is the clear momentum pick with back-to-back wins heading into a track that rewards McLaren's low-drag pace, making him the safest high-upside captain. Russell and Hamilton add proven, consistent point-scoring floors (P3/P4 at Zandvoort) from stable, well-funded teams unlikely to DNF, while veterans Alonso and Hulkenberg are low-cost, low-variance finishers who rarely retire and free up budget. Cheap, dependable constructors (Racing Bulls, Cadillac) round out the roster under budget without adding pit-stop or reliability risk, keeping the whole team focused on floor over ceiling."
+    },
+    {
+      "label": "AGGRESSIVE / HIGH-CEILING",
+      "drivers": ["Kimi Antonelli", "Lando Norris", "Liam Lawson", "Franco Colapinto", "Yuki Tsunoda"],
+      "constructors": ["Racing Bulls", "Cadillac F1 Team"],
+      "captain": "Kimi Antonelli",
+      "total_cost": 96.3,
+      "confidence_pct": 50,
+      "reasoning": "Antonelli's engine-penalty back-of-grid start is a textbook aggressive play -- on a slipstream-heavy, high-overtake track like Monza, a dominant Mercedes charging from the back can rack up enormous position-gained and overtake bonuses, so doubling that with the Captain boost maximizes ceiling. Norris adds a second high-floor, high-ceiling pick riding a genuine two-race win streak. The remaining budget goes to cheap, high-variance breakout candidates (Lawson, Colapinto, Tsunoda) paired with the two cheapest constructors to free maximum cash for the top-end aggressive plays."
+    },
+    {
+      "label": "VALUE-OPTIMIZED",
+      "drivers": ["Kimi Antonelli", "Lando Norris", "Charles Leclerc", "Alexander Albon", "Nico Hulkenberg"],
+      "constructors": ["Racing Bulls", "Audi"],
+      "captain": "Lando Norris",
+      "total_cost": 98.3,
+      "confidence_pct": 60,
+      "reasoning": "Norris captains off back-to-back wins -- genuine sustained momentum -- and Monza's low-drag layout suits McLaren's current setup. Antonelli and Leclerc round out a strong top-3 core at Monza at a noticeably lower price than Russell/Verstappen/Hamilton for similar upside. Albon at $5.2M is pure value arbitrage: his confirmed 20-place grid penalty at a slipstream-heavy, overtaking-friendly circuit sets up a cheap flood of position-gained/overtake bonus points. Hulkenberg, Racing Bulls, and Audi round out the budget with rock-bottom prices that still carry realistic qualifying/pit-stop bonus upside."
+    },
+    {
+      "label": "WINNABILITY-OPTIMIZED (risk concentrated on Captain slot)",
+      "drivers": ["Kimi Antonelli", "Lando Norris", "Charles Leclerc", "Carlos Sainz", "Nico Hulkenberg"],
+      "constructors": ["Cadillac F1 Team", "Racing Bulls"],
+      "captain": "Kimi Antonelli",
+      "total_cost": 99.3,
+      "confidence_pct": 55,
+      "reasoning": "All differentiation risk is concentrated in one slot: Antonelli as Captain is the boldest, highest-ceiling bet on the board -- a CONFIRMED (not speculative) back-of-grid engine penalty at his home race, on a track whose own circuit notes say it inflates 'position gained' and 'overtake' bonuses more than anywhere else on the calendar, doubled by the DRS Boost. If it fails, the loss is capped to one doubled slot rather than a whole roster of speculative picks. Everything else is built for floor: Norris (two-race win streak, low-drag Monza fit), Leclerc (motivated Ferrari home race, cheap), Sainz/Hulkenberg and the two cheapest constructors are pure budget-efficient floor fillers protecting the base score."
+    }
+  ],
+  "live_conditions_summary": "Hot, sunny, dry race day forecast (33-34C, ~2% rain chance, light winds); Antonelli (Mercedes) and Albon (Williams) both independently confirmed (F1.com, Sky Sports, PlanetF1, RACER, RacingNews365) to be serving grid penalties for exceeding power-unit component allocations, starting from the back of the grid.",
+  "backtest_basis": "Formations informed by a held-out backtest of this same reasoning process against the previous race (Dutch GP, Zandvoort): correctly identified 5/6 of the actual top-6 finishers and 2/3 of the podium, but initially picked the wrong winner because it under-weighted a driver's just-happened win streak as a momentum signal -- this was corrected in team_builder.py's prompt before generating the formations above. The correction itself has NOT yet been re-validated against a second held-out race (see eval/README or ARCHITECTURE.md known gaps).",
+  "actual_result": null,
+  "scoring": null
+}
