@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>f1-fantasy chat</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1>f1-fantasy</h1>
+      <p class="subtitle">Ask about prices, rules, standings &mdash; or ask it to build you a team.</p>
+    </header>
+
+    <main id="messages" class="messages"></main>
+
+    <form id="chat-form" class="composer">
+      <input
+        id="message-input"
+        type="text"
+        placeholder="e.g. What's Norris's price? / Build me a team for Monza"
+        autocomplete="off"
+        autofocus
+      >
+      <button type="submit" id="send-button">Send</button>
+    </form>
+  </div>
+
+  <script src="{{ url_for('static', filename='chat.js') }}"></script>
+</body>
+</html>
