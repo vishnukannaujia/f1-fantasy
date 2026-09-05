@@ -1,0 +1,68 @@
+Title: Official F1 Fantasy 2026 Rules and Scoring System
+Source: Aggregated from f1pitwall.dev, fanamp.com, and Yardbarker F1 Fantasy 2026 guides
+Date retrieved: 2026-09-05
+
+TEAM COMPOSITION AND BUDGET
+Each F1 Fantasy team consists of 5 drivers and 2 constructors, drafted within a total budget cap of
+$100 million. Driver and constructor prices adjust weekly based on their performance over the trailing
+3 races -- a driver or team on a hot streak gets more expensive, a struggling one gets cheaper.
+
+RACE POINTS (GRAND PRIX)
+Finishing position awards points on this scale: P1=25, P2=18, P3=15, P4=12, P5=10, P6=8, P7=6, P8=4,
+P9=2, P10=1. Positions 11th through 22nd score zero points for finishing position (other bonuses can
+still apply).
+
+Bonuses on top of finishing position:
+- Position gained (per position gained versus starting grid slot): +1
+- Overtake made (per on-track overtake): +1
+- Fastest lap of the race: +10
+- Driver of the Day (fan-voted): +10
+
+Penalties:
+- DNF (did not finish), NC (not classified), or DSQ (disqualified): -20 points
+
+QUALIFYING POINTS
+Qualifying position P1 through P10 awards: 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 points respectively.
+No time set, DSQ, or not classified in qualifying: -5 points.
+
+SPRINT RACE POINTS (6 sprint rounds scheduled in the 2026 season)
+Sprint finishing position P1 through P8 awards: 8, 7, 6, 5, 4, 3, 2, 1 points.
+Sprint fastest lap: +5. Sprint DNF: -10 (this penalty was reduced from -20 in the 2025 season).
+
+CONSTRUCTOR-SPECIFIC SCORING
+Qualifying bonuses (per constructor, based on both of its drivers' qualifying results):
+- Both drivers reach Q3: +10
+- Both drivers reach Q2 (neither reaches Q3): +5
+- Exactly one driver reaches Q3: +3
+- Exactly one driver reaches Q2: +1
+- Both drivers eliminated in Q1: -1
+- DSQ in qualifying: -5 per driver disqualified; DSQ in the race: -20 per driver disqualified
+
+Pit stop scoring (per pit stop performed by the constructor's crew):
+- Stop under 2.19 seconds: +10
+- Stop 2.20-2.49 seconds: +5
+- Stop 2.50-2.99 seconds: +2
+- Fastest pit stop of the race (across all constructors): +5 bonus
+- Record-pace stop under 1.8 seconds: +15 bonus
+
+DRS BOOST (available every race weekend, not a limited-use chip)
+Each week, pick one driver on your team to receive the DRS Boost: their total score for that race
+weekend is doubled. This is a standing weekly choice, separate from the season's limited chips below.
+
+CHIPS (6 total across the season, at most one active per race weekend)
+Available from Race 1:
+- 3X Captain: triples (rather than doubles) one driver's score for the weekend.
+- Autopilot: automatically assigns the DRS Boost to whichever of your drivers scores highest that
+  weekend, decided after the fact -- useful when you're unsure who will have the best race.
+- Final Fix: allows one driver swap after the qualifying deadline has passed, for situations like a
+  grid penalty or mechanical problem discovered late.
+
+Unlocked after Race 1:
+- Wildcard: unlimited free transfers for one race weekend, with no points penalty.
+- No Negative: all negative point events for your team that weekend are floored to zero.
+- Limitless: removes the $100M budget cap and the transfer limit for one race weekend only.
+
+TRANSFERS
+Two free transfers are allowed per race weekend. Each additional transfer beyond the two free ones
+costs -10 points. Up to 1 unused free transfer can carry over to the following weekend (maximum of 1
+banked at a time).

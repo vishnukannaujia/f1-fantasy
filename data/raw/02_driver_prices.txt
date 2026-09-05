@@ -1,0 +1,32 @@
+Title: F1 Fantasy 2026 Driver Prices (as of Round 12, Dutch Grand Prix)
+Source: f1-bot.com/prices, boxboxf1fantasy.com price-changes tool
+Date retrieved: 2026-09-05
+
+Current F1 Fantasy driver prices, in millions of dollars, ahead of Round 13 (Italian Grand Prix):
+
+George Russell (Mercedes): $27.6M
+Max Verstappen (Red Bull Racing): $27.5M
+Lando Norris (McLaren): $26.4M
+Kimi Antonelli (Mercedes): $26.0M
+Lewis Hamilton (Ferrari): $25.1M
+Charles Leclerc (Ferrari): $24.2M
+Oscar Piastri (McLaren): $24.1M
+Liam Lawson (Red Bull Racing): $14.3M
+Pierre Gasly (Alpine): $12.4M
+Franco Colapinto (Alpine): $10.6M
+Esteban Ocon (Haas): $10.1M
+Carlos Sainz (Williams): $9.8M
+Yuki Tsunoda (Racing Bulls): $9.7M
+Gabriel Bortoleto (Audi): $8.0M
+Arvid Lindblad (Racing Bulls): $7.8M
+Oliver Bearman (Haas): $7.0M
+Fernando Alonso (Aston Martin): $6.8M
+Alexander Albon (Williams): $5.2M
+Nico Hulkenberg (Audi): $3.6M
+Sergio Perez (Cadillac): $3.2M
+Lance Stroll (Aston Martin): $3.0M
+Valtteri Bottas (Cadillac): $3.0M
+
+Note: Cadillac is a new constructor entry for the 2026 F1 season, fielding Sergio Perez and Valtteri
+Bottas. Prices adjust weekly based on each driver's trailing 3-race performance, so these figures are a
+snapshot heading into Round 13 and will shift after the Italian Grand Prix results are in.

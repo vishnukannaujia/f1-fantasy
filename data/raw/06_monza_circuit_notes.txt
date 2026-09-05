@@ -1,0 +1,36 @@
+Title: Italian Grand Prix 2026 -- Circuit Notes and Team Suitability, Autodromo Nazionale Monza
+Source: Aggregated from f1chronicle.substack.com, the-race.com, scuderiafans.com, blog.f1livepulse.com
+Date retrieved: 2026-09-05
+Race date: September 6, 2026 (Round 13 of 23)
+
+CIRCUIT CHARACTERISTICS
+Monza is normally run in the lowest-downforce trim of the season to protect top speed through its long
+full-throttle sections. Braking stability and traction on exit through the First Chicane and the Ascari
+chicane are the two factors most likely to separate the front of the field -- pure straight-line speed
+matters more here than anywhere else on the calendar, but a car that can't put power down cleanly out of
+the chicanes will lose it all back under braking and acceleration.
+
+2026 POWER UNIT CONTEXT
+The 2026 power units deliver a much greater share of power from the electrical/hybrid system than in
+previous years. This puts extra emphasis on energy management and deployment across Monza's long
+straights, and Pirelli has flagged that the rear axle will face greater traction demands than usual as
+drivers get back to full power out of the chicanes -- rear tire management is a bigger factor this year
+than it has historically been at Monza.
+
+TEAM SUITABILITY FOR THIS RACE
+- Mercedes is the early favorite for the Italian Grand Prix: the W17 is expected to suit Monza's demands
+  particularly well, consistent with Mercedes' dominant form across the 2026 season so far.
+- Ferrari is running its new, more powerful and efficient ADUO-2 power unit and has a strong motivation
+  to perform well at its home race -- this is Ferrari's most important race of the year for team morale
+  and sponsor visibility, in addition to championship points.
+- McLaren arrives off the back of two consecutive victories (see 05_recent_form_and_last_race.txt),
+  giving Norris and Piastri real momentum heading into a track that rewards a well-sorted low-drag setup.
+- Red Bull is considered a potential dark horse: the RB22 may suit Monza's characteristics more naturally
+  than it has suited recent circuits.
+
+FANTASY IMPLICATIONS
+Monza tends to produce closer, more overtaking-heavy racing than most circuits on the calendar (slipstream
+effects on the long straights make passing easier), which historically inflates the "position gained" and
+"overtake" bonus points in F1 Fantasy scoring relative to a typical race. A driver starting mid-grid on a
+car with straight-line pace could plausibly out-score a pole-sitter on overtake and position-gained bonuses
+alone.

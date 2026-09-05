@@ -1,0 +1,26 @@
+Title: Most Recent Race Result and Current Form, heading into the Italian Grand Prix
+Source: Aggregated from supersport.com and motorsport.com 2026 F1 race coverage
+Date retrieved: 2026-09-05
+
+LATEST RACE: DUTCH GRAND PRIX, CIRCUIT ZANDVOORT (Round 12)
+Result order: 1st Lando Norris (McLaren), 2nd Kimi Antonelli (Mercedes), 3rd George Russell (Mercedes),
+4th Lewis Hamilton (Ferrari), 5th Charles Leclerc (Ferrari), 6th Oscar Piastri (McLaren).
+
+FORM HEADING INTO THE ITALIAN GRAND PRIX (Round 13, Monza)
+- Lando Norris arrives at Monza on the back of two consecutive Grand Prix victories, making him the
+  form driver of the moment regardless of his season-long standings position.
+- Mercedes (Antonelli and Russell) has been the season's dominant force overall -- Antonelli leads the
+  drivers' championship with six wins, and Mercedes leads the constructors' championship by a wide
+  margin (425 points, 87 clear of second-placed Ferrari).
+- Ferrari (Hamilton and Leclerc) finished 4th and 5th at Zandvoort -- competitive but not currently
+  matching Mercedes' or McLaren's recent pace.
+- 2026 introduced new power unit regulations (greater electrical/hybrid contribution) and active-aero
+  rules, which reset a lot of the competitive order relative to 2025 -- this is why current-season form
+  matters more than historical reputation when picking a fantasy team this year.
+
+IMPLICATIONS FOR FANTASY PICKS
+A driver's raw championship position and their last-race result can disagree (e.g. Norris is not the
+championship leader but is the hottest driver right now after back-to-back wins). Both season-long
+standings (04_championship_standings.txt) and recent-race form matter for choosing a captain / DRS
+Boost target, and they should be weighed together with circuit-specific suitability
+(06_monza_circuit_notes.txt).

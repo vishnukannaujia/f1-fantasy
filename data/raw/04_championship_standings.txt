@@ -1,0 +1,22 @@
+Title: 2026 F1 World Championship Standings, after Round 12 (Dutch Grand Prix, Zandvoort)
+Source: Aggregated from f1-fansite.com, motorsport.com, total-motorsport.com 2026 standings pages
+Date retrieved: 2026-09-05
+
+DRIVERS' CHAMPIONSHIP (top of the order)
+1. Kimi Antonelli (Mercedes) -- 242 points. Six wins, six poles, and 10 podiums so far this season.
+2. George Russell (Mercedes) -- 183 points (59 points behind Antonelli).
+   (Full order beyond the top 2 was not confirmed in this research pass; Lando Norris, Max Verstappen,
+   Lewis Hamilton, Charles Leclerc, Oscar Piastri are all plausibly in the top group given recent race
+   results -- see 05_recent_form_and_last_race.txt.)
+
+CONSTRUCTORS' CHAMPIONSHIP
+1. Mercedes AMG Petronas F1 Team -- 425 points
+2. Scuderia Ferrari HP -- 338 points
+3. McLaren Mastercard F1 Team -- 263 points
+4. Oracle Red Bull Racing -- 186 points
+
+SEASON CONTEXT
+This is Round 12 of 23 on the 2026 calendar. Mercedes has been the dominant constructor this season,
+driven largely by Antonelli's six wins. With 11 rounds remaining after this point (11 Grands Prix plus
+1 further sprint event), 283 points are still mathematically available in the drivers' title fight --
+so Antonelli's 59-point lead over Russell, while commanding, is not yet mathematically clinched.

@@ -1,0 +1,21 @@
+Title: F1 Fantasy 2026 Constructor Prices (as of Round 12, Dutch Grand Prix)
+Source: boxboxf1fantasy.com price-changes tool, web search aggregation
+Date retrieved: 2026-09-05
+
+Current F1 Fantasy constructor prices, in millions of dollars, ahead of Round 13 (Italian Grand Prix):
+
+Mercedes AMG Petronas F1 Team: $32.9M
+McLaren Mastercard F1 Team: $31.3M
+Oracle Red Bull Racing: $31.2M
+Scuderia Ferrari HP: $26.9M
+Williams Racing: $13.2M
+Alpine: $12.5M
+Haas F1 Team: $7.4M
+Audi: $6.6M
+Aston Martin Aramco F1 Team: $6.3M
+Racing Bulls: $6.3M
+Cadillac F1 Team: $3.0M
+
+Note: Cadillac is a brand-new constructor entry for the 2026 F1 season. Constructor prices, like driver
+prices, adjust weekly based on trailing 3-race performance (finishing positions, qualifying bonuses, and
+pit-stop scoring all feed into it).
