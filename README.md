@@ -1,4 +1,4 @@
-# f1-fantasy-rag
+# f1-fantasy
 
 A RAG + LangGraph tool for the official F1 Fantasy game (fantasy.formula1.com): answers questions about
 the current 2026 F1 season, and recommends a budget-constrained 5-driver + 2-constructor team grounded
@@ -33,7 +33,7 @@ deliberately current-season data a base LLM's training data won't reliably have 
 ## Setup
 
 ```bash
-cd ~/GitHub/f1-fantasy-rag
+cd ~/GitHub/f1-fantasy
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt

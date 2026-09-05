@@ -1,4 +1,4 @@
-# f1-fantasy-rag -- Architecture
+# f1-fantasy -- Architecture
 
 Living doc. Update this alongside the code as the design evolves -- see Changelog at the bottom.
 
