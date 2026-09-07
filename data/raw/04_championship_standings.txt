@@ -1,22 +1,37 @@
-Title: 2026 F1 World Championship Standings, after Round 12 (Dutch Grand Prix, Zandvoort)
-Source: Aggregated from f1-fansite.com, motorsport.com, total-motorsport.com 2026 standings pages
-Date retrieved: 2026-09-05
+Title: 2026 F1 World Championship Standings, after Round 13 (Italian Grand Prix, Monza)
+Source: Aggregated from racingnews365.com, motorsport.com 2026 standings pages
+Date retrieved: 2026-09-07
 
-DRIVERS' CHAMPIONSHIP (top of the order)
-1. Kimi Antonelli (Mercedes) -- 242 points. Six wins, six poles, and 10 podiums so far this season.
-2. George Russell (Mercedes) -- 183 points (59 points behind Antonelli).
-   (Full order beyond the top 2 was not confirmed in this research pass; Lando Norris, Max Verstappen,
-   Lewis Hamilton, Charles Leclerc, Oscar Piastri are all plausibly in the top group given recent race
-   results -- see 05_recent_form_and_last_race.txt.)
+DRIVERS' CHAMPIONSHIP
+1. Kimi Antonelli (Mercedes) -- 267 points
+2. George Russell (Mercedes) -- 201 points (66 points behind Antonelli)
+3. Lewis Hamilton (Ferrari) -- 191 points
+4. Lando Norris (McLaren) -- 171 points
+5. Charles Leclerc (Ferrari) -- 155 points
+6. Max Verstappen (Red Bull) -- 127 points
+7. Oscar Piastri (McLaren) -- 116 points
+8. Isack Hadjar (Red Bull) -- 71 points (has not scored since missing Zandvoort/Monza with injury --
+   see 05_recent_form_and_last_race.txt; points earned earlier in the season)
+9. Liam Lawson (Red Bull, deputizing for Hadjar) -- 51 points
+10. Pierre Gasly (Alpine) -- 41 points
+(Full order continues to P23 with declining point totals; not all confirmed in this research pass.)
 
 CONSTRUCTORS' CHAMPIONSHIP
-1. Mercedes AMG Petronas F1 Team -- 425 points
-2. Scuderia Ferrari HP -- 338 points
-3. McLaren Mastercard F1 Team -- 263 points
-4. Oracle Red Bull Racing -- 186 points
+1. Mercedes AMG Petronas F1 Team -- 468 points
+2. Scuderia Ferrari HP -- 346 points
+3. McLaren Mastercard F1 Team -- 287 points
+4. Oracle Red Bull Racing -- 204 points
+5. Racing Bulls -- 75 points
+6. Alpine -- 62 points
+7. Haas F1 Team -- 21 points
+8. Audi -- 16 points
+9. Williams Racing -- 11 points
+10. Aston Martin Aramco F1 Team -- 3 points
+11. Cadillac F1 Team -- 0 points
 
 SEASON CONTEXT
-This is Round 12 of 23 on the 2026 calendar. Mercedes has been the dominant constructor this season,
-driven largely by Antonelli's six wins. With 11 rounds remaining after this point (11 Grands Prix plus
-1 further sprint event), 283 points are still mathematically available in the drivers' title fight --
-so Antonelli's 59-point lead over Russell, while commanding, is not yet mathematically clinched.
+This is Round 13 of 23 on the 2026 calendar, immediately after the Italian Grand Prix at Monza. Mercedes
+remains dominant in both championships, having scored a 1-2 finish at Monza (Antonelli P1, Russell P2)
+to further extend its constructors' lead. Ferrari sits a clear second in constructors' despite a mixed
+Monza weekend (Hamilton P6, Leclerc DNF). Antonelli's 66-point drivers' lead over Russell is commanding
+but not yet mathematically clinched, with 10 rounds remaining after this point.

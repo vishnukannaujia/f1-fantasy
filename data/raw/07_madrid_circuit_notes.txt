@@ -1,0 +1,56 @@
+Title: Spanish Grand Prix 2026 -- Circuit Notes and Team Suitability, Madrid Ring ("Madring")
+Source: Aggregated from f1chronicle.substack.com, the-race.com, motorsport.com 2026 preview coverage
+Date retrieved: 2026-09-07
+Race weekend: September 11-13, 2026, race day Sunday September 13 (Round 14 of 23)
+
+CIRCUIT CHARACTERISTICS
+This is the first-ever Formula 1 race at the Madring circuit (IFEMA Madrid), the 81st different track to
+host a world championship round. It is a hybrid street/permanent layout in the mould of Miami or Las
+Vegas -- built through and around the IFEMA exhibition-center grounds rather than a purpose-built permanent
+facility, but wider and more consistently surfaced than a true street circuit. Key numbers: 5.416 km lap
+length, 22 turns, main straight 523 m long. Because this is a brand-new track with zero prior F1 running,
+there is no historical race data, tire-degradation record, or proven setup direction to draw on -- teams
+are working from simulation only heading into the weekend.
+
+"LA MONUMENTAL" -- THE SIGNATURE FEATURE
+The circuit's defining characteristic is a banked corner named "La Monumental" (styled after Las Ventas,
+Madrid's famous bullring), banked at roughly 24 degrees -- the longest banked corner on the 2026 calendar,
+taking cars roughly six seconds to traverse at speed. Banked corners of this kind reward a stable, planted
+rear end and strong high-speed aerodynamic load; a car that's loose under lateral load elsewhere on the
+calendar could specifically struggle here, or specifically shine, in a way not yet observable from any
+other 2026 result.
+
+OTHER KEY SECTIONS
+- Turn 4 is a fast sweeping corner taken at up to 340 km/h -- a genuine high-speed test of front-end
+  confidence, unusual for a circuit with this much street-circuit DNA.
+- Turns 5-6 form a chicane widely flagged pre-weekend as the best overtaking opportunity on the layout,
+  comparable in importance to Monza's chicanes for fantasy "position gained" purposes.
+- The lap includes meaningful elevation change through the middle sector, atypical for a street-hybrid
+  layout and expected to add a further setup variable teams have not had to solve for elsewhere this year.
+
+TEAM SUITABILITY FOR THIS RACE
+Because no team has ever run at this circuit, suitability calls here are necessarily more speculative than
+at an established track like Monza -- current-season form and car characteristics (see
+05_recent_form_and_last_race.txt) matter more than track-specific history this week, precisely because
+there isn't any track-specific history yet.
+- Mercedes arrives with the strongest recent form of any team (a Monza 1-2, Antonelli's commanding
+  championship lead) and a car that has looked competitive across very different circuit types this
+  season, which is a reasonable proxy for adaptability to an unknown layout.
+- Ferrari's home-race motivation from Monza does not carry over, but the ADUO-2 power unit's straight-line
+  strength should still matter on Madring's 523m main straight; Leclerc's Monza DNF is a form concern to
+  weigh against Ferrari's season-long constructors' position.
+- Red Bull's Monza podium (Verstappen P3) raises the question of whether the RB22 is trending upward in
+  raw pace or whether that result was Monza-specific (low-downforce, slipstream-heavy) -- Madring's higher-
+  downforce, higher-load demands (especially La Monumental) are a different test that will help disambiguate
+  which explanation was correct.
+- McLaren's pace has been described as strong across a range of circuit types this season; a competitive
+  showing here would reinforce that, while a quiet weekend would suggest recent form has been more
+  circuit-dependent than assumed.
+
+FANTASY IMPLICATIONS
+A brand-new circuit tends to produce more qualifying and race unpredictability than an established track,
+because teams cannot lean on prior setup data -- this raises the value of drivers/teams with strong recent
+adaptability across varied circuit types, and slightly lowers confidence in any single "this car suits this
+track" claim relative to a race like Monza where the characteristics are well understood in advance. The
+Turns 5-6 chicane is the likeliest source of "position gained" / overtake bonus points, similar in kind to
+Monza's chicanes but without a historical base rate to calibrate expectations against.

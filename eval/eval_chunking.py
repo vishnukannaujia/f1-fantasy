@@ -96,8 +96,8 @@ EVAL_CASES = [
     ("How many free transfers are allowed per race weekend?", ["Two free transfers"], "rules lookup"),
     ("What is the qualifying points system?", ["P1", "P10"], "rules lookup"),
     ("What's the fastest lap bonus in a Grand Prix?", ["Fastest lap", "+10"], "collision: race vs. sprint fastest lap"),
-    ("Who leads the drivers championship?", ["Antonelli", "242"], "standings lookup"),
-    ("Who won the most recent race?", ["Norris", "Zandvoort"], "recent form lookup"),
+    ("Who leads the drivers championship?", ["Antonelli", "267"], "standings lookup"),
+    ("Who won the most recent race?", ["Antonelli", "Monza"], "recent form lookup"),
     ("Is Monza a low downforce or high downforce circuit?", ["downforce"], "circuit notes lookup"),
     ("Which team is the favorite at Monza?", ["Mercedes"], "circuit notes lookup"),
 ]

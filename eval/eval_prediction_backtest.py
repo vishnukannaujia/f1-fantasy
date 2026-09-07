@@ -3,7 +3,7 @@ Held-out backtest: predict a race that already happened, using only the context
 that would have been available BEFORE it, then score the prediction against the
 real result. This is the standard way to validate a forecasting system before
 trusting it on a live, unresolved event (the actual point of this eval: establish
-confidence in team_builder.py's reasoning ahead of the real, upcoming Monza race).
+confidence in team_builder.py's reasoning ahead of a real, unresolved upcoming race).
 
 Held-out race: the 2026 Dutch Grand Prix at Zandvoort (the most recent race in our
 corpus). PRE_ZANDVOORT_CONTEXT below is built from fresh research into the
@@ -175,7 +175,7 @@ def main():
         "circuit fit) produces a plausible, grounded prediction -- not whether it can predict "
         "race-day variance (incidents, strategy calls, weather) that no pre-race context resolves. "
         "A strong podium/top-6 overlap here is the basis for trusting the same reasoning approach "
-        "in team_builder.py for the actual upcoming Monza race, where the outcome is still unknown."
+        "in team_builder.py for a real, unresolved upcoming race."
     )
 
 

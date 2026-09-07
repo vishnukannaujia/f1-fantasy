@@ -152,15 +152,15 @@ deliberately NOT added.
 - **`refresh_data.py` does not exist yet.** `data/raw/*.txt` was populated once via this session's own
   WebSearch/WebFetch tools; there is no automated weekly refresh. Updating prices/standings/form before
   a future race weekend currently means manually re-running that research and rewriting the files.
-- **`04_championship_standings.txt` is incomplete** -- only the top 2 drivers (Antonelli, Russell) were
-  confirmed; the rest of the driver order was not found during research and is explicitly flagged as
-  missing in the file itself.
-- **The Zandvoort backtest's prompt fix has not been re-validated.** Weighting recent hot-streak form
-  was added to `PROPOSAL_INSTRUCTIONS` based on ONE failure case. `eval/predictions_tracker.py` exists
-  now specifically to accumulate more real data points as the season continues -- the Italian GP
-  prediction is saved and awaiting the real result; a second backtest (e.g. the Hungarian GP, for which
-  pre-race context was already gathered) would be the fastest way to check the fix generalizes rather
-  than just patches the one case we happened to see fail.
+- **The Zandvoort-derived prompt fix has been validated once, not twice.** Weighting recent hot-streak
+  form was added to `PROPOSAL_INSTRUCTIONS` based on the Zandvoort backtest. The Italian GP prediction was
+  since scored against the real Monza result and produced two further learnings (penalty-recalculation,
+  hot-streak-vs-track-fit -- see `learnings/learnings.json` #2/#3), so the fix has now been exercised
+  against two real races, not one -- but a third, independent confirmation (e.g. scoring the Spanish GP
+  prediction in `predictions/2026-09-13_spanish_gp.json` once that race happens) is still the fastest way
+  to check it generalizes rather than just patches the cases seen so far. The Spanish GP is also the
+  system's first prediction at a circuit with zero historical race data of any kind, which is a new kind
+  of uncertainty the backtest methodology hasn't had to account for before.
 - **No hardening against indirect prompt injection via live web search.** `fetch_live_conditions`
   concatenates live web content directly into the `propose_team` prompt with no sanitization. The
   sibling project `rag-demo` has a dedicated red-team harness for exactly this class of risk in

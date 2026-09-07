@@ -1,26 +1,45 @@
-Title: Most Recent Race Result and Current Form, heading into the Italian Grand Prix
+Title: Most Recent Race Result and Current Form, heading into the Spanish Grand Prix (Madrid)
 Source: Aggregated from supersport.com and motorsport.com 2026 F1 race coverage
-Date retrieved: 2026-09-05
+Date retrieved: 2026-09-07
 
-LATEST RACE: DUTCH GRAND PRIX, CIRCUIT ZANDVOORT (Round 12)
-Result order: 1st Lando Norris (McLaren), 2nd Kimi Antonelli (Mercedes), 3rd George Russell (Mercedes),
-4th Lewis Hamilton (Ferrari), 5th Charles Leclerc (Ferrari), 6th Oscar Piastri (McLaren).
+LATEST RACE: ITALIAN GRAND PRIX, MONZA (Round 13)
+Result order: 1st Kimi Antonelli (Mercedes), 2nd George Russell (Mercedes), 3rd Max Verstappen (Red Bull),
+4th Lando Norris (McLaren), 5th Oscar Piastri (McLaren), 6th Lewis Hamilton (Ferrari).
+Charles Leclerc (Ferrari) retired with a crash at the Parabolica on lap 2 -- a DNF. Lance Stroll and
+Fernando Alonso (both Aston Martin) also failed to finish. Sergio Perez received a 5-second time penalty
+applied after the race, which did not change his finishing position outside the points.
 
-FORM HEADING INTO THE ITALIAN GRAND PRIX (Round 13, Monza)
-- Lando Norris arrives at Monza on the back of two consecutive Grand Prix victories, making him the
-  form driver of the moment regardless of his season-long standings position.
-- Mercedes (Antonelli and Russell) has been the season's dominant force overall -- Antonelli leads the
-  drivers' championship with six wins, and Mercedes leads the constructors' championship by a wide
-  margin (425 points, 87 clear of second-placed Ferrari).
-- Ferrari (Hamilton and Leclerc) finished 4th and 5th at Zandvoort -- competitive but not currently
-  matching Mercedes' or McLaren's recent pace.
-- 2026 introduced new power unit regulations (greater electrical/hybrid contribution) and active-aero
-  rules, which reset a lot of the competitive order relative to 2025 -- this is why current-season form
-  matters more than historical reputation when picking a fantasy team this year.
+STANDOUT STORYLINE: Antonelli started Monza from P19 after a 30-place grid penalty, then produced 26
+overtakes over the race distance and set the fastest lap on his way to victory -- one of the most dominant
+recovery drives of the season. Russell followed home in 2nd for a Mercedes 1-2. This is the single biggest
+data point behind the "penalty-recalculation" and "hot-streak momentum vs. car pace" learnings in
+learnings/learnings.json -- see entries #2 and #3, which were derived directly from scoring this result
+against the pre-race prediction.
+
+FORM HEADING INTO THE SPANISH GRAND PRIX (Round 14, Madrid -- first-ever F1 race at this circuit)
+- Kimi Antonelli is now the clear form driver as well as championship leader: a Monza win from P19 extends
+  his points lead over Russell to 66 (see 04_championship_standings.txt), and Mercedes has now won two of
+  the last two races (Zandvoort via Norris was the exception before that) with Antonelli/Russell finishing
+  1-2 at Monza specifically.
+- Max Verstappen's Monza podium (P3) is his best result in several rounds -- worth watching as a possible
+  value pick if Red Bull's pace is genuinely trending up rather than a Monza-specific power/slipstream
+  effect (Madrid's mixed street/permanent layout is a very different test, see 06_madrid_circuit_notes.txt).
+- Charles Leclerc's Monza DNF (crash, lap 2) is a blemish on an otherwise-solid recent Ferrari run and
+  should weigh against picking him as a Captain/DRS Boost target until his form re-stabilizes, even though
+  Ferrari's season-long standings position (3rd in constructors') is still strong.
+- Isack Hadjar remains out of the car with a wrist injury (missed Zandvoort and Monza, his third
+  consecutive absence will be Madrid); Liam Lawson continues to deputize at Red Bull and Yuki Tsunoda
+  continues at Racing Bulls -- this seat arrangement is already reflected in 02_driver_prices.txt. Red Bull
+  has stated it hopes to have Hadjar back for the Azerbaijan Grand Prix in Baku, i.e. not this race.
+- 2026's new power unit regulations (greater electrical/hybrid contribution) and active-aero rules continue
+  to keep the competitive order fluid race to race -- this is why current-season form matters more than
+  historical reputation or a single result when picking a fantasy team this year.
 
 IMPLICATIONS FOR FANTASY PICKS
-A driver's raw championship position and their last-race result can disagree (e.g. Norris is not the
-championship leader but is the hottest driver right now after back-to-back wins). Both season-long
-standings (04_championship_standings.txt) and recent-race form matter for choosing a captain / DRS
-Boost target, and they should be weighed together with circuit-specific suitability
-(06_monza_circuit_notes.txt).
+A driver's raw championship position and their last-race result can disagree (e.g. Verstappen is not
+championship-competitive this season but just produced his best result in rounds with a Monza podium).
+Both season-long standings (04_championship_standings.txt) and recent-race form matter for choosing a
+captain / DRS Boost target, and they should be weighed together with circuit-specific suitability
+(06_madrid_circuit_notes.txt) -- especially this week, since Madrid is a brand-new circuit with zero
+historical data, so current form and car characteristics matter more than usual relative to track-specific
+history.

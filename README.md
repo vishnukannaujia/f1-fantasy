@@ -11,12 +11,13 @@ pass/fail numbers, and the concrete decisions each one drove: **[EVALS.md](EVALS
 
 ## The topic
 
-The corpus (`data/raw/*.txt`) covers the **2026 F1 season as of early September 2026**: official F1
+The corpus (`data/raw/*.txt`) covers the **2026 F1 season as of mid-September 2026**: official F1
 Fantasy scoring rules, current driver/constructor prices, championship standings, the most recent race
-result and current form, and circuit notes for the upcoming Italian Grand Prix at Monza. This is
-deliberately current-season data a base LLM's training data won't reliably have -- the same principle
-`rag-demo` demonstrated with recent AI news, applied here to something with a direct personal use case
-(playing the actual fantasy game, not just a demo).
+result and current form (the Italian Grand Prix at Monza), and circuit notes for the upcoming Spanish
+Grand Prix at Madrid's brand-new Madring circuit. This is deliberately current-season data a base LLM's
+training data won't reliably have -- the same principle `rag-demo` demonstrated with recent AI news,
+applied here to something with a direct personal use case (playing the actual fantasy game, not just a
+demo).
 
 ## Why LangChain, and why LangGraph
 
@@ -57,7 +58,7 @@ python src/ingest.py                                          # build the vector
 python src/chains.py                                           # (see chains.py -- import and call
                                                                 # build_rag_chain() for single questions)
 
-python src/team_builder.py "Build me a team for the Italian Grand Prix at Monza."
+python src/team_builder.py "Build me a team for the Spanish Grand Prix at Madrid."
 
 python web/app.py   # local chat UI at localhost:5001 -- routes each message to chains.py (fast
                      # Q&A) or team_builder.py (slower, live-data team recommendation) by keyword
@@ -121,8 +122,8 @@ EVALS.md                   every eval script + the decisions each one drove
 ## Known gaps
 
 See **[ARCHITECTURE.md § Known gaps](ARCHITECTURE.md#known-gaps-honest-as-of-last-update)** for the
-current honest list -- as of last update: no automated weekly data refresh, the standings file is
-missing the full driver order beyond the top 2, the backtest-driven prompt fix hasn't been re-validated
-against a second race, no hardening against indirect prompt injection via live web search content,
-Langfuse is wired but never key-verified against a real trace, and the embedding-space visualization
-artifact's hover tooltip doesn't work (confirmed via a real browser check, not yet root-caused).
+current honest list -- as of last update: no automated weekly data refresh, the backtest-driven prompt
+fix has been validated against two real races (Zandvoort backtest + the scored Monza result) but not yet
+a third, no hardening against indirect prompt injection via live web search content, Langfuse is wired
+but never key-verified against a real trace, and the embedding-space visualization artifact's hover
+tooltip doesn't work (confirmed via a real browser check, not yet root-caused).

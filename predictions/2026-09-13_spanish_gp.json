@@ -1,0 +1,91 @@
+{
+  "race": "2026 Spanish Grand Prix",
+  "circuit": "Madring (Madrid), first-ever F1 race at this circuit",
+  "race_date": "2026-09-13",
+  "predicted_at": "2026-09-07",
+  "budget_cap": 100.0,
+  "formations": [
+    {
+      "label": "WINNABILITY-OPTIMIZED (risk concentrated on Captain slot, HIGHEST CEILING)",
+      "drivers": [
+        "Kimi Antonelli",
+        "George Russell",
+        "Charles Leclerc",
+        "Oliver Bearman",
+        "Nico Hulkenberg"
+      ],
+      "constructors": [
+        "Cadillac F1 Team",
+        "Racing Bulls"
+      ],
+      "captain": "Kimi Antonelli",
+      "total_cost": 97.7,
+      "confidence_pct": 50,
+      "recommended_chip": "3X Captain",
+      "reasoning": "All differentiation risk is concentrated in one slot, stacked with a chip: Antonelli is both the championship leader (66-point lead over Russell) and the hottest driver on the grid after winning from P19 at Monza with 26 overtakes and a fastest lap. Tripling that score via the 3X Captain chip (rather than the standard double) is the single highest-ceiling bet available this weekend, and Madring being a brand-new circuit with zero track history means recent momentum is a better signal than usual since there's no historical car/track fit to weigh against it. Russell adds a second high-floor Mercedes pick from the same Monza 1-2. Everything else -- Leclerc (cheap relative to his season standing, Ferrari's straight-line pace should suit Madring's 523m main straight even without home-race motivation), Bearman and Hulkenberg (rock-bottom fillers), Cadillac and Racing Bulls (cheapest constructors) -- is pure budget-efficient floor protecting the tripled bet.",
+      "risk_flagged": "Committing a limited-use chip (only 6 available all season, one per weekend) to a brand-new circuit with no track history to validate the pick against is a genuinely bigger unknown than committing it at an established track like Monza -- if Antonelli's Mercedes doesn't suit Madring's higher-downforce, banked-corner demands as well as it suited low-drag Monza, this chip is spent with nothing to show for it."
+    },
+    {
+      "label": "AGGRESSIVE / HIGH-CEILING (PIPELINE-GENERATED, src/team_builder.py live output)",
+      "drivers": [
+        "Kimi Antonelli",
+        "George Russell",
+        "Lando Norris",
+        "Lance Stroll",
+        "Valtteri Bottas"
+      ],
+      "constructors": [
+        "Racing Bulls",
+        "Haas F1 Team"
+      ],
+      "captain": "Kimi Antonelli",
+      "total_cost": 99.7,
+      "confidence_pct": 55,
+      "recommended_chip": "Autopilot",
+      "reasoning": "This is the tool's own live output, produced via LangGraph (load_static_context -> fetch_live_conditions -> propose_team -> validate_budget), fed the updated Monza-result corpus and the new Madrid circuit notes. It independently converged on the same Antonelli-as-Captain logic as the WINNABILITY formation above -- Antonelli is both championship leader and form driver, and Madring has no track history to weigh against that -- but spreads risk across three podium-caliber Mercedes/McLaren picks (Antonelli, Russell, Norris) rather than concentrating everything in one tripled slot, with Stroll and Bottas as pure budget fillers. Given genuine uncertainty about who actually suits an unraced circuit, the Autopilot chip (auto-assigns the DRS Boost to whichever of the five scores highest, decided after the fact) hedges against guessing the single best Captain wrong among three plausible candidates.",
+      "notes": "First attempt returned 0 parsed drivers/constructors (format-compliance failure on a longer, fact-dense prompt -- the same previously-documented robustness gap seen on the Monza post-qualifying run); succeeded on retry 2/2."
+    },
+    {
+      "label": "VALUE-OPTIMIZED",
+      "drivers": [
+        "Kimi Antonelli",
+        "Max Verstappen",
+        "Liam Lawson",
+        "Alexander Albon",
+        "Yuki Tsunoda"
+      ],
+      "constructors": [
+        "Racing Bulls",
+        "Audi"
+      ],
+      "captain": "Max Verstappen",
+      "total_cost": 95.6,
+      "confidence_pct": 50,
+      "recommended_chip": "None (save chips)",
+      "reasoning": "Verstappen's Monza podium (P3, his best result in several rounds) at $27.5M is genuinely cheaper than Russell/Norris for comparable recent output, and whether that reflects real car-pace gains or a Monza-specific effect is exactly the kind of question Madring's very different (higher-downforce, banked-corner) demands will help answer -- captaining him here is a value bet on the former. Antonelli anchors the floor. Lawson, Albon, and Tsunoda are three of the cheapest drivers on the grid, each carrying real position-gained upside purely because grid outcomes at a brand-new circuit are inherently harder to forecast, which flattens the usual gap between cheap and expensive picks more than at an established track.",
+      "notes": "Leaves $4.4M of budget unused -- deliberately, since none of the remaining cheap upgrades available materially improve confidence at a circuit with zero track history to evaluate them against."
+    },
+    {
+      "label": "SAFE / CONSISTENT (LOWEST CEILING, HIGHEST FLOOR)",
+      "drivers": [
+        "Lando Norris",
+        "George Russell",
+        "Lewis Hamilton",
+        "Fernando Alonso",
+        "Nico Hulkenberg"
+      ],
+      "constructors": [
+        "Racing Bulls",
+        "Cadillac F1 Team"
+      ],
+      "captain": "George Russell",
+      "total_cost": 98.8,
+      "confidence_pct": 55,
+      "recommended_chip": "None (save chips)",
+      "reasoning": "Russell captains here instead of Antonelli deliberately: both were part of the same Monza 1-2, but Russell's recent results have been steady front-running rather than a boom-or-bust recovery drive from a grid penalty, which is the more predictable profile to double heading into a circuit with no track record to sanity-check either driver against. Norris adds McLaren's season-long cross-circuit competitiveness (a genuine proxy for adaptability to an unraced layout) and Hamilton a proven, reliable point-scoring floor. Alonso and Hulkenberg are low-variance veterans who rarely retire. Cheap, dependable constructors round out the roster under budget without adding pit-stop or reliability risk -- this formation's entire premise is that at a circuit nobody has raced before, the safest edge is minimizing variance, not chasing it.",
+      "notes": "First-ever race at this circuit means even 'safe' picks carry more genuine uncertainty than a SAFE formation would at an established track -- confidence here (55%) is only marginally higher than several of the more aggressive formations, reflecting that the whole weekend is less predictable than usual."
+    }
+  ],
+  "live_conditions_summary": "Madring is a first-ever F1 circuit, so there is no historical weather or incident base rate to compare against. Live conditions fetched by the pipeline at prediction time (2,472 chars via Anthropic's hosted web_search tool) covered the race-weekend forecast and any breaking news; separately confirmed via research this session: Isack Hadjar remains out with a wrist injury (third consecutive missed race, Red Bull hopes to have him back for Baku), so Liam Lawson continues deputizing at Red Bull and Yuki Tsunoda continues at Racing Bulls -- already reflected in the current driver-price file, no team-list surprises for this weekend beyond that.",
+  "backtest_basis": "Built on the Zandvoort backtest (5/6 top-6 overlap, 2/3 podium, wrong winner -- the original source of the hot-streak-weighting prompt fix) plus the since-scored Monza result, which validated that fix a second time and produced two further learnings now live in learnings/learnings.json (#2: verify actual grid position from penalty size rather than assuming worst-case; #3: weigh momentum against track-specific structural car advantage, not as an unconditional override). This is the first prediction generated after those Monza-derived learnings were added to the prompt, AND the first prediction ever made for a circuit with zero historical race data -- a genuinely new source of uncertainty this system's backtest methodology has not had to account for before, since every prior prediction (Zandvoort, Monza) was for a track with a known racing history to reason about."
+}

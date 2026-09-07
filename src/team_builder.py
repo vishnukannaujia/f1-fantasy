@@ -50,9 +50,9 @@ BUDGET_CAP = 100.0
 MAX_RETRIES = 2
 
 # Update these each race weekend, alongside the corpus refresh (see ARCHITECTURE.md).
-RACE_NAME = "2026 Italian Grand Prix"
-RACE_LOCATION = "Monza, Italy"
-RACE_DATE = "September 6, 2026"
+RACE_NAME = "2026 Spanish Grand Prix"
+RACE_LOCATION = "Madrid, Spain (Madring circuit)"
+RACE_DATE = "September 13, 2026"
 
 
 def extract_text(content) -> str:
@@ -162,7 +162,7 @@ def load_static_context(state: GraphState) -> GraphState:
             "ALL CONSTRUCTOR PRICES (use these exact names):\n" + "\n".join(constructor_lines),
             _read("04_championship_standings.txt"),
             _read("05_recent_form_and_last_race.txt"),
-            _read("06_monza_circuit_notes.txt"),
+            _read("07_madrid_circuit_notes.txt"),
             load_learnings_text(),
         ]
         if part
