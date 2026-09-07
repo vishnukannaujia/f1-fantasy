@@ -46,7 +46,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data" / "raw"
 PERSIST_DIR = str(ROOT / "chroma_db")
 COLLECTION_NAME = "f1_fantasy_2026"
-EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+EMBEDDING_MODEL = "BAAI/bge-large-en-v1.5"  # 1024-dim, retrieval-tuned (asymmetric query/passage), was all-mpnet-base-v2 (768-dim, symmetric)
 
 ROW_CHUNK_FILES = {"02_driver_prices.txt", "03_constructor_prices.txt"}
 
@@ -180,6 +180,18 @@ def build_vector_store(
     )
 
     embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
+
+    # Chroma.from_documents() ADDS to an existing collection of the same name
+    # rather than replacing it -- every prior re-ingest during this project
+    # silently duplicated the whole corpus on top of what was already there
+    # (discovered: 167 stored vectors for what should have been 59, including
+    # 108 entries still carrying the pre-rename "f1-fantasy-rag" path).
+    # Delete first so re-ingesting is idempotent, not additive.
+    Chroma(
+        collection_name=collection_name,
+        embedding_function=embeddings,
+        persist_directory=persist_directory,
+    ).delete_collection()
 
     vector_store = Chroma.from_documents(
         documents=chunks,

@@ -32,8 +32,11 @@ from typing import List, Optional, TypedDict
 import anthropic
 from dotenv import load_dotenv
 from langchain_anthropic import ChatAnthropic
+from langfuse import observe
 from langgraph.graph import END, StateGraph
 from langsmith import traceable
+
+from observability import langfuse_callbacks
 
 from f1_data import parse_constructor_prices, parse_driver_prices
 
@@ -173,6 +176,7 @@ def load_static_context(state: GraphState) -> GraphState:
 
 
 @traceable(name="fetch_live_conditions (raw anthropic SDK, not auto-traced by LangChain)")
+@observe(name="fetch_live_conditions")
 def fetch_live_conditions(state: GraphState) -> GraphState:
     client = anthropic.Anthropic()
     query = (
@@ -406,7 +410,8 @@ def run_team_builder_full(question: str) -> dict:
     # (it's built on LangChain's Runnable interface) whenever LANGSMITH_TRACING
     # is set -- no @traceable wrapper needed here, just a readable root name
     # instead of the generic default so traces are findable by question asked.
-    config = {"run_name": f"team_builder: {question[:60]}"}
+    # Langfuse needs the explicit callback attached, added here alongside it.
+    config = {"run_name": f"team_builder: {question[:60]}", "callbacks": langfuse_callbacks()}
     return app.invoke({"question": question, "retries": 0, "validation_errors": []}, config=config)
 
 

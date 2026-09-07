@@ -42,9 +42,10 @@ cp .env.example .env
 # edit .env and set ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-Embeddings run locally via `sentence-transformers` (`all-MiniLM-L6-v2`); the vector store is a local
-Chroma DB at `./chroma_db/`. Only the LLM calls (generation, and `team_builder.py`'s live web search)
-need the Anthropic API key.
+Embeddings run locally via `sentence-transformers` (`BAAI/bge-large-en-v1.5` -- picked over smaller/more
+generic models via a real head-to-head eval, see `ARCHITECTURE.md` § Embedding model reference); the
+vector store is a local Chroma DB at `./chroma_db/`. Only the LLM calls (generation, and
+`team_builder.py`'s live web search) need the Anthropic API key.
 
 ## Run it
 

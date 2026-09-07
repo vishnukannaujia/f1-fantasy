@@ -17,6 +17,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 
 from ingest import get_vector_store
+from observability import langfuse_callbacks
 
 load_dotenv()
 
@@ -88,5 +89,9 @@ def build_rag_chain(k: int = 4, vector_store=None, system_prompt: str = None):
         | prompt
         | llm
         | RunnableLambda(lambda msg: extract_text(msg.content))
-    )
+    ).with_config(callbacks=langfuse_callbacks())
+    # LangSmith needs no wiring here -- it's fully automatic via env vars once
+    # the langsmith package is installed. Langfuse needs this explicit
+    # CallbackHandler attached, which is why the two look different here even
+    # though both trace every call this chain makes.
     return rag_chain, retriever

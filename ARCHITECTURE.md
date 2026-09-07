@@ -114,13 +114,39 @@ fact stops being self-contained -- the paragraph for prose, the single line for 
 | Row-chunk files | `02_driver_prices.txt`, `03_constructor_prices.txt` -- one chunk per line, not paragraph-split at all | `ROW_CHUNK_FILES` in `ingest.py` |
 | Prose chunks produced | 26 (from 4 files: `01`, `04`, `05`, `06`) | min=89, max=930, mean=349 chars |
 | Row chunks produced | 33 (22 drivers + 11 constructors) | min=46, max=72 chars |
-| Embedding model | `sentence-transformers/all-MiniLM-L6-v2`, 384-dim, local | `EMBEDDING_MODEL` in `ingest.py` |
+| Embedding model | `BAAI/bge-large-en-v1.5`, 1024-dim, local, retrieval-tuned | `EMBEDDING_MODEL` in `ingest.py` |
 | Vector store | Chroma, cosine similarity, persisted to `./chroma_db/` | `ingest.py` |
 | Production retrieval `k` | 4 (used by `chains.py`'s default) | `PRODUCTION_K` in `eval_chunking.py` |
 
 This cap is **derived, not hand-picked** -- rerun `python src/ingest.py` after adding new corpus files and
 these numbers (especially the computed cap) will change automatically if a longer paragraph appears.
 Don't hardcode these values elsewhere; read them from the source if you need them programmatically.
+
+## Embedding model reference (empirically tested, not picked on theory)
+
+`ingest.py`'s `EMBEDDING_MODEL` was tested head-to-head across three models on `eval_chunking.py`'s same
+15-query set, changing nothing else. recall@4/8 were already at 100% with the original model and had no
+headroom left to show improvement -- recall@1 was the only axis that actually differentiated them:
+
+| Model | Dims | Type | recall@1 |
+|---|---|---|---|
+| `sentence-transformers/all-MiniLM-L6-v2` (original) | 384 | Symmetric similarity | 60% |
+| `sentence-transformers/all-mpnet-base-v2` | 768 | Symmetric similarity | 80% |
+| **`BAAI/bge-large-en-v1.5` (current)** | 1024 | **Retrieval-tuned, asymmetric** | **93%** |
+
+The jump from MiniLM to MPNet is explained by size/capacity alone. The further jump to BGE is not just
+size -- BGE is trained specifically for **asymmetric query-to-passage retrieval** (a short question
+matched against a longer chunk), which is structurally what `chains.py` actually does, unlike MPNet's
+general sentence-similarity training. Every disambiguation "collision" case built into the eval set
+(sprint vs. race DNF, sprint vs. race fastest lap) passes at recall@1 with BGE; none did with MiniLM.
+Switching embedding models requires a full `ingest.py` re-run -- vectors from different models aren't
+compatible with each other, and Chroma's collection is deleted and rebuilt from scratch each ingest (see
+Changelog: this wasn't always true, and re-ingesting used to silently duplicate the corpus on top of
+itself).
+
+BGE-large-en-v1.5's own docs note retrieval quality is fine without a query instruction prefix for v1.5
+specifically (older BGE versions needed one) -- this project uses it without one, matching that guidance,
+not out of laziness.
 
 ## Evals -- purpose, usage, and what each one actually checks
 
@@ -194,3 +220,16 @@ fix has **not yet been re-validated** against a second held-out race -- see Know
   Generated 4 strategically distinct team formations for the Italian GP (Safe, Value, Winnability-
   optimized, Aggressive) and saved them to `predictions/2026-09-06_italian_gp.json`, pending scoring once
   the race happens.
+- **2026-09-07** -- Scored the real Italian GP result. Found and fixed a real bug while inspecting the
+  vector store directly: `Chroma.from_documents()` adds to an existing collection rather than replacing
+  it, so every prior `ingest.py` re-run had silently duplicated the corpus on top of what was already
+  there -- 167 vectors stored for what should have been 59, 108 of them still carrying the pre-rename
+  `f1-fantasy-rag` path. Fixed by deleting the collection before rebuilding; verified idempotent across
+  repeated re-ingests.
+- **2026-09-07** -- Empirically bench-marked the embedding model choice (see "Embedding model reference"
+  above): `all-MiniLM-L6-v2` (original, 60% recall@1) -> `all-mpnet-base-v2` (80%) -> `BAAI/bge-large-en-v1.5`
+  (93%, current). Also added LangSmith tracing (`.claude/skills/langsmith-trace`, verified with real
+  captured traces) and wired (but not yet key-verified) Langfuse side by side via `src/observability.py`
+  for direct tool comparison. Upgraded the project's Python from 3.9 to 3.12 to support both LangGraph
+  Studio and Langfuse's 3.10+ requirement; consolidated to a single `venv/` (previously a separate
+  `venv-studio/`).
