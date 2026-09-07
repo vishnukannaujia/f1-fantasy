@@ -122,53 +122,30 @@ This cap is **derived, not hand-picked** -- rerun `python src/ingest.py` after a
 these numbers (especially the computed cap) will change automatically if a longer paragraph appears.
 Don't hardcode these values elsewhere; read them from the source if you need them programmatically.
 
-## Embedding model reference (empirically tested, not picked on theory)
+## Embedding model reference
 
-`ingest.py`'s `EMBEDDING_MODEL` was tested head-to-head across three models on `eval_chunking.py`'s same
-15-query set, changing nothing else. recall@4/8 were already at 100% with the original model and had no
-headroom left to show improvement -- recall@1 was the only axis that actually differentiated them:
+| Parameter | Value |
+|---|---|
+| Model | `BAAI/bge-large-en-v1.5` |
+| Dimensions | 1024 |
+| Type | Retrieval-tuned, asymmetric (query-to-passage) |
+| Distance metric | Cosine, declared explicitly (`collection_metadata={"hnsw:space": "cosine"}`) |
+| Query instruction prefix | None -- BGE's own docs say v1.5 doesn't need one (older BGE versions did) |
 
-| Model | Dims | Type | recall@1 |
-|---|---|---|---|
-| `sentence-transformers/all-MiniLM-L6-v2` (original) | 384 | Symmetric similarity | 60% |
-| `sentence-transformers/all-mpnet-base-v2` | 768 | Symmetric similarity | 80% |
-| **`BAAI/bge-large-en-v1.5` (current)** | 1024 | **Retrieval-tuned, asymmetric** | **93%** |
+Why this specific model, why cosine, and the full 3-model comparison that drove the choice: see
+**[EVALS.md](EVALS.md)**. Switching embedding models requires a full `ingest.py` re-run -- vectors from
+different models aren't compatible with each other, and the Chroma collection is deleted and rebuilt from
+scratch each ingest (see Changelog: this wasn't always true, and re-ingesting used to silently duplicate
+the corpus on top of itself).
 
-The jump from MiniLM to MPNet is explained by size/capacity alone. The further jump to BGE is not just
-size -- BGE is trained specifically for **asymmetric query-to-passage retrieval** (a short question
-matched against a longer chunk), which is structurally what `chains.py` actually does, unlike MPNet's
-general sentence-similarity training. Every disambiguation "collision" case built into the eval set
-(sprint vs. race DNF, sprint vs. race fastest lap) passes at recall@1 with BGE; none did with MiniLM.
-Switching embedding models requires a full `ingest.py` re-run -- vectors from different models aren't
-compatible with each other, and Chroma's collection is deleted and rebuilt from scratch each ingest (see
-Changelog: this wasn't always true, and re-ingesting used to silently duplicate the corpus on top of
-itself).
+## Evals
 
-BGE-large-en-v1.5's own docs note retrieval quality is fine without a query instruction prefix for v1.5
-specifically (older BGE versions needed one) -- this project uses it without one, matching that guidance,
-not out of laziness.
-
-## Evals -- purpose, usage, and what each one actually checks
-
-Five scripts under `eval/` and one prediction ledger under `predictions/`, each validating a different
-layer of the system. None require pytest -- all are plain runnable scripts with `assert`/exit-code-based
-pass/fail, consistent with the project's existing style.
-
-| Script | What it checks | Needs LLM calls? | Current result |
-|---|---|---|---|
-| `eval/eval_chunking.py` | **Chunking layer.** Layer 1 (structural): every parsed driver/constructor maps to exactly one row chunk, every prose chunk respects the dynamic cap. Layer 2 (retrieval): recall@k against 15 hand-labeled real questions, including two deliberate "collision" cases (sprint vs. race DNF, sprint vs. race fastest lap) built to stress-test disambiguation. | No (embeddings only) | recall@1=67%, **recall@4=100%** (production k), recall@8=100% |
-| `eval/eval_team_builder_logic.py` | **Parsing + budget math.** `_parse_proposal`, `_lookup`, `validate_budget`, `route_after_validation` against hand-built fake proposals (valid, over-budget, wrong roster size, unknown driver name, captain outside roster). This is pure Python logic -- a bug here would silently corrupt every team recommendation regardless of how good the LLM reasoning is. | No | 19/19 checks pass |
-| `eval/eval_generation.py` | **Generation quality**, not just retrieval -- does the FINAL answer state the right fact (not just "was the right chunk retrieved," which `eval_chunking.py` already covers). Includes one deliberately out-of-corpus question (Anthropic's financials) to check the model declines rather than hallucinates; this specific check needed an LLM judge after three straight heuristic/regex attempts produced false negatives from natural phrasing variance -- see the comment in the file for why. | Yes | 10/10 pass |
-| `eval/eval_prediction_backtest.py` | **Held-out forecasting accuracy.** Predicts a race that already happened (Dutch GP/Zandvoort) using ONLY the context that would have been available before it (fresh research into pre-race standings/form/circuit notes), scores the prediction against the real known result. This is what actually validates whether `team_builder.py`'s reasoning process can be trusted for a real, unresolved upcoming race. | Yes | recall top6=5/6, podium=2/3, winner wrong (see finding below) |
-| `eval/predictions_tracker.py` | **Ongoing live validation**, turning the one-off backtest above into a repeatable practice. `score` command takes a real post-race result and scores every saved formation in a `predictions/*.json` file against it (driver overlap, captain's actual finish); `summary` prints the track record across every race scored so far. This is how a single n=1 backtest becomes a real, growing calibration dataset over the rest of the season. | No | Italian GP prediction saved 2026-09-05, awaiting the real result to score |
-
-**A concrete finding from the backtest, not just a pass/fail number**: the Zandvoort backtest correctly
-identified 5 of the real top-6 finishers and 2 of 3 podium finishers, but predicted the wrong winner --
-its own stated reasoning explicitly discounted a driver's just-happened win as "a one-off rather than
-sustained pace," and that driver went on to win again. This was fed back into `team_builder.py`'s
-`PROPOSAL_INSTRUCTIONS` as an explicit instruction to weight immediate hot-streak form at least as
-heavily as season-long standings -- a real, evidence-backed prompt change, not a hypothetical one. That
-fix has **not yet been re-validated** against a second held-out race -- see Known gaps.
+Moved to its own page: **[EVALS.md](EVALS.md)** -- every eval script under `eval/`, what each checks,
+current pass/fail numbers, and (more importantly) the concrete design decisions each one actually drove:
+why paragraph-boundary chunking beat 8 other strategies, why `bge-large-en-v1.5` beat two other embedding
+models, why cosine distance is now declared explicitly, how the similarity-score threshold and quality
+gate numbers were picked from real measured data, and why cross-encoder reranking was tested and
+deliberately NOT added.
 
 ## Known gaps (honest as of last update)
 
@@ -191,8 +168,15 @@ fix has **not yet been re-validated** against a second held-out race -- see Know
   tool, not production), but a real gap, not an oversight to hide.
 - **No error handling** if `fetch_live_conditions`'s web search call fails (network error, rate limit,
   empty result) -- an exception there currently crashes the whole graph rather than degrading gracefully.
-- **No web UI yet** -- everything so far is CLI/script-driven (`python src/team_builder.py "..."`,
-  `python eval/*.py`). A chatbot web front-end is planned but not yet built.
+- **Langfuse is wired but not key-verified.** `src/observability.py`'s Langfuse integration (callbacks,
+  session correlation) has been tested against the no-keys fallback path (graceful no-op) but never
+  against a real captured trace -- `LANGFUSE_PUBLIC_KEY`/`LANGFUSE_SECRET_KEY` were never actually added
+  to `.env`. LangSmith, by contrast, has been verified with real traces via the API.
+- **The embedding-space visualization artifact has a broken hover tooltip.** Confirmed via a real browser
+  check (screenshot + hover attempts) that the chart itself renders correctly, but hovering a point never
+  shows its tooltip. Not yet root-caused -- the artifact runs in a cross-origin sandboxed iframe, which
+  blocks direct DOM introspection from outside it, so this needs debugging from inside the artifact's own
+  script rather than externally.
 
 ## Changelog
 
@@ -233,3 +217,19 @@ fix has **not yet been re-validated** against a second held-out race -- see Know
   for direct tool comparison. Upgraded the project's Python from 3.9 to 3.12 to support both LangGraph
   Studio and Langfuse's 3.10+ requirement; consolidated to a single `venv/` (previously a separate
   `venv-studio/`).
+- **2026-09-07** -- Added session_id correlation so a LangSmith trace and a Langfuse trace for the same
+  call can be cross-referenced (`propagate_attributes(session_id=...)` on the Langfuse side,
+  `metadata.session_id` on the LangSmith side -- verified against the actual installed package, not just
+  docs, since LangSmith has no native "session" field of its own). `run_team_builder_full` also now pins a
+  `run_id` up front so the exact LangSmith trace URL is known before the call finishes, useful with
+  concurrent runs. Verified end-to-end via the no-Langfuse-keys fallback path (graceful no-op). **Langfuse
+  itself is still not key-verified** -- real keys were never added to `.env`, so the Langfuse side of this
+  correlation is wired and tested for the no-op case only, not confirmed against a real captured trace.
+- **2026-09-07** -- Retrieval-layer hardening, each piece tested before adopting (full detail in
+  [EVALS.md](EVALS.md)): declared the distance metric explicitly (cosine, tested against l2/ip -- identical
+  results confirmed, but no longer an undeclared accident of the current embedding model's normalization);
+  added a similarity-score threshold + deterministic quality gate to `chains.py` (skips the LLM call
+  entirely for clearly off-topic questions, picked from real measured score distributions, not a guess);
+  tested cross-encoder reranking and explicitly did NOT adopt it (net-zero recall@1 change, with evidence
+  for why: the general-purpose reranker mishandled a negation the existing bi-encoder got right). Split
+  eval documentation out into its own page, `EVALS.md`, since it grew past a summary table.

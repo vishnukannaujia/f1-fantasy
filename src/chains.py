@@ -14,7 +14,7 @@ import os
 from dotenv import load_dotenv
 from langchain_anthropic import ChatAnthropic
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnableLambda, RunnablePassthrough
+from langchain_core.runnables import RunnableLambda
 
 from ingest import get_vector_store
 from observability import langfuse_callbacks
@@ -71,11 +71,38 @@ RAG_SYSTEM_PROMPT = (
 )
 
 
-def build_rag_chain(k: int = 4, vector_store=None, system_prompt: str = None):
-    """Retrieval-augmented chain: retrieve top-k chunks, then answer grounded in them."""
+NOT_FOUND_MESSAGE = (
+    "I don't have any information relevant to that question in the F1 Fantasy 2026 "
+    "knowledge base (rules, prices, standings, recent form, circuit notes). This might be "
+    "outside what this assistant covers, or phrased in a way that didn't match anything -- "
+    "try rephrasing, or ask about F1 Fantasy rules/prices/standings/circuit notes directly."
+)
+
+DEFAULT_SCORE_THRESHOLD = 0.60  # relevance score = 1 - cosine_distance; see ARCHITECTURE.md
+# for how this number was picked: measured real distance scores for the 15-query eval set
+# (legitimate worst case 0.363) against clearly off-topic probes (0.44+), threshold sits in
+# the gap. This is a COARSE pre-filter for obviously unrelated questions, not a fact-checker
+# -- a topically-adjacent-but-factually-absent question (e.g. asking about a season this
+# corpus doesn't cover) scores well inside the "legitimate" range and correctly still reaches
+# the LLM, which is the layer actually equipped to notice the fact isn't there.
+
+
+def build_rag_chain(
+    k: int = 4,
+    vector_store=None,
+    system_prompt: str = None,
+    score_threshold: float = DEFAULT_SCORE_THRESHOLD,
+):
+    """Retrieval-augmented chain: retrieve top-k chunks above score_threshold, then answer
+    grounded in them. Below-threshold retrieval short-circuits before the LLM call entirely
+    (see NOT_FOUND_MESSAGE) -- a deterministic gate, not just a prompt instruction hoping the
+    model notices empty/irrelevant context on its own."""
     llm = get_llm()
     vector_store = vector_store if vector_store is not None else get_vector_store()
-    retriever = vector_store.as_retriever(search_kwargs={"k": k})
+    retriever = vector_store.as_retriever(
+        search_type="similarity_score_threshold",
+        search_kwargs={"k": k, "score_threshold": score_threshold},
+    )
 
     prompt = ChatPromptTemplate.from_messages(
         [
@@ -84,14 +111,19 @@ def build_rag_chain(k: int = 4, vector_store=None, system_prompt: str = None):
         ]
     )
 
-    rag_chain = (
-        {"context": retriever | format_docs, "question": RunnablePassthrough()}
-        | prompt
-        | llm
-        | RunnableLambda(lambda msg: extract_text(msg.content))
-    ).with_config(callbacks=langfuse_callbacks())
+    def answer(question: str) -> str:
+        docs = retriever.invoke(question)
+        if not docs:
+            print(f"  [quality gate] nothing scored above {score_threshold} for {question!r} -- skipping LLM call")
+            return NOT_FOUND_MESSAGE
+        messages = prompt.invoke({"context": format_docs(docs), "question": question})
+        return extract_text(llm.invoke(messages).content)
+
+    rag_chain = RunnableLambda(answer).with_config(callbacks=langfuse_callbacks())
     # LangSmith needs no wiring here -- it's fully automatic via env vars once
-    # the langsmith package is installed. Langfuse needs this explicit
-    # CallbackHandler attached, which is why the two look different here even
-    # though both trace every call this chain makes.
+    # the langsmith package is installed, and traces the retriever.invoke() /
+    # llm.invoke() calls made inside `answer` individually even though they're
+    # called imperatively rather than composed via the `|` operator. Langfuse
+    # needs this explicit CallbackHandler attached, which is why the two look
+    # different here even though both trace every call this chain makes.
     return rag_chain, retriever

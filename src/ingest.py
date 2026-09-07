@@ -198,6 +198,15 @@ def build_vector_store(
         embedding=embeddings,
         collection_name=collection_name,
         persist_directory=persist_directory,
+        # Explicit, not relied-on-by-accident: Chroma's own default is squared
+        # L2, not cosine. Our BGE vectors happen to be unit-normalized, which
+        # makes L2/cosine/dot-product all rank identically (verified
+        # empirically -- all three gave the same recall@k on the eval set),
+        # but that equivalence is a property of THIS embedding model, not a
+        # guarantee. A future model swap that doesn't auto-normalize would
+        # silently degrade into magnitude-sensitive ranking with no error.
+        # Declaring cosine here makes the intent robust to that, not implicit.
+        collection_metadata={"hnsw:space": "cosine"},
     )
     print(f"Persisted {len(chunks)} chunks to Chroma at {persist_directory}")
     return vector_store
