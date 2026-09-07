@@ -22,6 +22,7 @@ Usage:
     python src/team_builder.py "your question"     # e.g. "Build me a team for Monza"
 """
 
+import json
 import os
 import re
 import sys
@@ -32,6 +33,7 @@ import anthropic
 from dotenv import load_dotenv
 from langchain_anthropic import ChatAnthropic
 from langgraph.graph import END, StateGraph
+from langsmith import traceable
 
 from f1_data import parse_constructor_prices, parse_driver_prices
 
@@ -96,6 +98,51 @@ def _read(name: str) -> str:
     return (DATA_DIR / name).read_text()
 
 
+LEARNINGS_PATH = ROOT / "learnings" / "learnings.json"
+
+
+def load_learnings_text() -> str:
+    """Learnings accumulated by eval/learnings_loop.py from real scored races
+    -- this is the actual feedback loop: a new lesson appended to
+    learnings.json is picked up here automatically, on the very next call,
+    with no code change. Contrast with how the very first lesson (from the
+    Zandvoort backtest) got into the system: hand-edited directly into this
+    file's prompt string. That approach doesn't scale past one lesson."""
+    if not LEARNINGS_PATH.exists():
+        return ""
+    learnings = json.loads(LEARNINGS_PATH.read_text())
+    if not learnings:
+        return ""
+
+    # Weight by evidence, not equally -- with only a handful of races scored so
+    # far, treating every learning as an unconditional rule risks overfitting to
+    # single-race noise. Recency gets a mild nudge (the competitive order shifts
+    # over a season), never an automatic override of a more-confirmed pattern.
+    lines = [
+        "LESSONS FROM PAST RACES -- weight these by their evidence strength, NOT equally:",
+        "- A lesson tagged 'preliminary (n=1)' is a hypothesis from a single race -- weigh it "
+        "alongside your own reasoning about this race's specific facts, don't follow it blindly.",
+        "- A lesson tagged 'confirmed (n>=2)' has held up across multiple independent races and "
+        "should be weighted more heavily.",
+        "- More recent lessons get slightly more weight than older ones (the season's competitive "
+        "order shifts), but a single recent observation does NOT override an established, "
+        "multiply-confirmed pattern outright.",
+        "- Where a lesson is marked as refining an earlier one, treat it as narrowing/qualifying "
+        "that earlier lesson to a specific condition, NOT replacing or contradicting it -- both "
+        "still apply, in their respective circumstances.",
+        "",
+    ]
+    # Oldest first: later lessons appearing later in the prompt gives them a
+    # mild recency-favoring position, consistent with the "slightly more
+    # weight" instruction above, without making it an override.
+    for entry in sorted(learnings, key=lambda e: e["added"]):
+        tag = f"{entry.get('confidence', 'preliminary')} (n={entry.get('race_count', 1)}), added {entry['added']}"
+        if entry.get("refines"):
+            tag += f", refines lesson #{entry['refines']}"
+        lines.append(f"- [{tag}] {entry['lesson']}")
+    return "\n".join(lines)
+
+
 def load_static_context(state: GraphState) -> GraphState:
     driver_prices = parse_driver_prices(DATA_DIR / "02_driver_prices.txt")
     constructor_prices = parse_constructor_prices(DATA_DIR / "03_constructor_prices.txt")
@@ -104,14 +151,17 @@ def load_static_context(state: GraphState) -> GraphState:
     constructor_lines = [f"{team}: ${price}M" for team, price in constructor_prices.items()]
 
     context = "\n\n".join(
-        [
+        part
+        for part in [
             _read("01_fantasy_scoring_rules.txt"),
             "ALL DRIVER PRICES (use these exact names):\n" + "\n".join(driver_lines),
             "ALL CONSTRUCTOR PRICES (use these exact names):\n" + "\n".join(constructor_lines),
             _read("04_championship_standings.txt"),
             _read("05_recent_form_and_last_race.txt"),
             _read("06_monza_circuit_notes.txt"),
+            load_learnings_text(),
         ]
+        if part
     )
     print(f"  [load_static_context] {len(driver_prices)} drivers, {len(constructor_prices)} constructors loaded")
     return {
@@ -122,6 +172,7 @@ def load_static_context(state: GraphState) -> GraphState:
     }
 
 
+@traceable(name="fetch_live_conditions (raw anthropic SDK, not auto-traced by LangChain)")
 def fetch_live_conditions(state: GraphState) -> GraphState:
     client = anthropic.Anthropic()
     query = (
@@ -154,15 +205,10 @@ real price list, so use driver/constructor names EXACTLY as they appear in the \
 ALL DRIVER PRICES / ALL CONSTRUCTOR PRICES lists above -- no extra text, no \
 team name appended to a driver's name.
 - Pick one of your 5 drivers as Captain (gets the DRS Boost -- doubled score).
-- Weight a driver's IMMEDIATE recent form (their last 1-2 races) at least as \
-heavily as their season-long championship position. A held-out backtest of \
-this exact reasoning process against the previous race (Dutch GP, Zandvoort) \
-found it correctly identified the competitive group (5/6 top-6 overlap) but \
-picked the wrong race winner specifically because it discounted a driver's \
-just-happened win as "a one-off rather than sustained pace" -- that driver \
-went on to win again. Don't make that mistake: a driver currently on a \
-multi-race win streak should be treated as a genuine momentum signal, not \
-explained away in favor of a more "consistent" season-long points leader.
+- Pay close attention to any "LESSONS FROM PAST RACES" section in the context above --
+those are specific, evidence-backed corrections derived from scoring this exact
+reasoning process against real race results. They exist because this same process got
+something wrong before; don't repeat it.
 
 Reply in EXACTLY this format, with no extra commentary before or after:
 
@@ -356,7 +402,12 @@ def run_team_builder_full(question: str) -> dict:
     prediction record for later scoring against the real result) should use
     this instead of run_team_builder."""
     app = build_graph()
-    return app.invoke({"question": question, "retries": 0, "validation_errors": []})
+    # LangGraph's compiled app.invoke() is already auto-traced by LangSmith
+    # (it's built on LangChain's Runnable interface) whenever LANGSMITH_TRACING
+    # is set -- no @traceable wrapper needed here, just a readable root name
+    # instead of the generic default so traces are findable by question asked.
+    config = {"run_name": f"team_builder: {question[:60]}"}
+    return app.invoke({"question": question, "retries": 0, "validation_errors": []}, config=config)
 
 
 def run_team_builder(question: str) -> str:

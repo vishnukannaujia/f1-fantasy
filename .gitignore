@@ -1,6 +1,8 @@
 venv/
+venv-studio/
 __pycache__/
 *.pyc
 .env
 chroma_db/
+.langgraph_api/
 .DS_Store

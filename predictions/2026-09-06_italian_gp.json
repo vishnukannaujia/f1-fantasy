@@ -7,8 +7,17 @@
   "formations": [
     {
       "label": "SAFE / CONSISTENT",
-      "drivers": ["Lando Norris", "George Russell", "Lewis Hamilton", "Fernando Alonso", "Nico Hulkenberg"],
-      "constructors": ["Racing Bulls", "Cadillac F1 Team"],
+      "drivers": [
+        "Lando Norris",
+        "George Russell",
+        "Lewis Hamilton",
+        "Fernando Alonso",
+        "Nico Hulkenberg"
+      ],
+      "constructors": [
+        "Racing Bulls",
+        "Cadillac F1 Team"
+      ],
       "captain": "Lando Norris",
       "total_cost": 98.8,
       "confidence_pct": 65,
@@ -16,8 +25,17 @@
     },
     {
       "label": "AGGRESSIVE / HIGH-CEILING",
-      "drivers": ["Kimi Antonelli", "Lando Norris", "Liam Lawson", "Franco Colapinto", "Yuki Tsunoda"],
-      "constructors": ["Racing Bulls", "Cadillac F1 Team"],
+      "drivers": [
+        "Kimi Antonelli",
+        "Lando Norris",
+        "Liam Lawson",
+        "Franco Colapinto",
+        "Yuki Tsunoda"
+      ],
+      "constructors": [
+        "Racing Bulls",
+        "Cadillac F1 Team"
+      ],
       "captain": "Kimi Antonelli",
       "total_cost": 96.3,
       "confidence_pct": 50,
@@ -25,8 +43,17 @@
     },
     {
       "label": "VALUE-OPTIMIZED",
-      "drivers": ["Kimi Antonelli", "Lando Norris", "Charles Leclerc", "Alexander Albon", "Nico Hulkenberg"],
-      "constructors": ["Racing Bulls", "Audi"],
+      "drivers": [
+        "Kimi Antonelli",
+        "Lando Norris",
+        "Charles Leclerc",
+        "Alexander Albon",
+        "Nico Hulkenberg"
+      ],
+      "constructors": [
+        "Racing Bulls",
+        "Audi"
+      ],
       "captain": "Lando Norris",
       "total_cost": 98.3,
       "confidence_pct": 60,
@@ -34,8 +61,17 @@
     },
     {
       "label": "WINNABILITY-OPTIMIZED (risk concentrated on Captain slot)",
-      "drivers": ["Kimi Antonelli", "Lando Norris", "Charles Leclerc", "Carlos Sainz", "Nico Hulkenberg"],
-      "constructors": ["Cadillac F1 Team", "Racing Bulls"],
+      "drivers": [
+        "Kimi Antonelli",
+        "Lando Norris",
+        "Charles Leclerc",
+        "Carlos Sainz",
+        "Nico Hulkenberg"
+      ],
+      "constructors": [
+        "Cadillac F1 Team",
+        "Racing Bulls"
+      ],
       "captain": "Kimi Antonelli",
       "total_cost": 99.3,
       "confidence_pct": 55,
@@ -44,6 +80,55 @@
   ],
   "live_conditions_summary": "Hot, sunny, dry race day forecast (33-34C, ~2% rain chance, light winds); Antonelli (Mercedes) and Albon (Williams) both independently confirmed (F1.com, Sky Sports, PlanetF1, RACER, RacingNews365) to be serving grid penalties for exceeding power-unit component allocations, starting from the back of the grid.",
   "backtest_basis": "Formations informed by a held-out backtest of this same reasoning process against the previous race (Dutch GP, Zandvoort): correctly identified 5/6 of the actual top-6 finishers and 2/3 of the podium, but initially picked the wrong winner because it under-weighted a driver's just-happened win streak as a momentum signal -- this was corrected in team_builder.py's prompt before generating the formations above. The correction itself has NOT yet been re-validated against a second held-out race (see eval/README or ARCHITECTURE.md known gaps).",
-  "actual_result": null,
-  "scoring": null
+  "actual_result": {
+    "finishing_order": [
+      "Kimi Antonelli",
+      "George Russell",
+      "Max Verstappen",
+      "Lando Norris",
+      "Oscar Piastri",
+      "Lewis Hamilton",
+      "Pierre Gasly",
+      "Arvid Lindblad",
+      "Franco Colapinto",
+      "Yuki Tsunoda",
+      "Gabriel Bortoleto",
+      "Nico Hulkenberg",
+      "Carlos Sainz",
+      "Liam Lawson",
+      "Oliver Bearman",
+      "Esteban Ocon",
+      "Alexander Albon",
+      "Sergio Perez",
+      "Valtteri Bottas"
+    ],
+    "dnfs": [
+      "Lance Stroll",
+      "Fernando Alonso",
+      "Charles Leclerc"
+    ],
+    "penalties_or_verdicts": "Perez: 5s post-race penalty for not following race director instructions. Leclerc: heavy crash at Parabolica lap 2, red flag, DNF. Antonelli started P19 after a confirmed 30-place grid penalty (not P22/back-of-grid as pre-race formations assumed)."
+  },
+  "scoring": {
+    "SAFE / CONSISTENT": {
+      "top6_overlap": "3/5",
+      "captain_finishing_position": 4,
+      "captain_scored_well": true
+    },
+    "AGGRESSIVE / HIGH-CEILING": {
+      "top6_overlap": "2/5",
+      "captain_finishing_position": 1,
+      "captain_scored_well": true
+    },
+    "VALUE-OPTIMIZED": {
+      "top6_overlap": "2/5",
+      "captain_finishing_position": 4,
+      "captain_scored_well": true
+    },
+    "WINNABILITY-OPTIMIZED (risk concentrated on Captain slot)": {
+      "top6_overlap": "2/5",
+      "captain_finishing_position": 1,
+      "captain_scored_well": true
+    }
+  }
 }

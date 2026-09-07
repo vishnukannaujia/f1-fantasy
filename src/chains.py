@@ -28,7 +28,15 @@ def get_llm():
         raise SystemExit(
             "ANTHROPIC_API_KEY is not set. Copy .env.example to .env and add your key."
         )
-    return ChatAnthropic(model=MODEL_NAME)
+    # Without an explicit max_tokens, langchain_anthropic's low default leaves no
+    # room once the model spends part of its budget on extended thinking for a
+    # complex prompt -- observed hitting stop_reason="max_tokens" with a
+    # completely EMPTY visible response (team_builder.py hit this first; then
+    # eval/learnings_loop.py hit the same thing calling this same function with
+    # a longer analysis prompt). Any caller doing more than build_rag_chain's
+    # short Q&A prompts needs this headroom, so it's the default here, not
+    # something each caller has to remember to set.
+    return ChatAnthropic(model=MODEL_NAME, max_tokens=8192)
 
 
 def extract_text(content) -> str:

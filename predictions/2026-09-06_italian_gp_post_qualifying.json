@@ -1,0 +1,117 @@
+{
+  "race": "2026 Italian Grand Prix",
+  "circuit": "Autodromo Nazionale Monza",
+  "race_date": "2026-09-06",
+  "predicted_at": "2026-09-05 (after qualifying, before the race)",
+  "supersedes": "predictions/2026-09-06_italian_gp.json (pre-qualifying, speculative grid)",
+  "budget_cap": 100.0,
+  "confirmed_qualifying_grid": {
+    "source": "PlanetF1, RacingNews365, Crash.net, The Race, GPFans, Sky Sports, Formula1.com -- cross-checked 2026-09-05",
+    "raw_qualifying_classification_top10": [
+      "1. Pierre Gasly (Alpine) 1:21.786 -- maiden pole",
+      "2. George Russell (Mercedes) +0.060s",
+      "3. Oscar Piastri (McLaren) +0.180s",
+      "4. Charles Leclerc (Ferrari) +0.218s",
+      "5. Lewis Hamilton (Ferrari) +0.225s",
+      "6. Max Verstappen (Red Bull) +0.284s",
+      "7. Kimi Antonelli (Mercedes) +0.307s"
+    ],
+    "actual_race_starting_grid_top10": [
+      "P1 Pierre Gasly",
+      "P2 George Russell",
+      "P3 Charles Leclerc",
+      "P4 Lewis Hamilton",
+      "P5 Max Verstappen",
+      "P6 Oscar Piastri (3-place penalty, impeding Lawson in Q2)",
+      "P7 Franco Colapinto",
+      "P8 Lando Norris",
+      "P9 Arvid Lindblad",
+      "P10 Gabriel Bortoleto"
+    ],
+    "back_of_grid_penalties": "Kimi Antonelli (CONFIRMED 30-place grid penalty, power-unit component allocation), Liam Lawson, and Alexander Albon all start from the back of the grid (~P18-20). Note: qualifying POINTS (10/9/8/7/6/5/4/3/2/1 for P1-P10) are awarded on raw qualifying classification, not final grid slot -- Antonelli still banks P7 qualifying points despite starting last.",
+    "note_on_uncertainty": "Exact grid slots within the back-of-grid trio (Antonelli/Lawson/Albon) and positions 11-17 were not fully cross-confirmed across sources at the time of writing; treat as approximate."
+  },
+  "formations": [
+    {
+      "label": "PIPELINE-GENERATED (src/team_builder.py, re-run with confirmed post-qualifying grid)",
+      "drivers": [
+        "Lando Norris",
+        "Charles Leclerc",
+        "Pierre Gasly",
+        "Franco Colapinto",
+        "Gabriel Bortoleto"
+      ],
+      "constructors": [
+        "Alpine",
+        "Cadillac F1 Team"
+      ],
+      "captain": "Lando Norris",
+      "total_cost": 97.1,
+      "confidence_pct": 60,
+      "reasoning": "Norris is the clear momentum pick after back-to-back wins, and starting only P8 at an overtake-friendly Monza sets him up for big position-gained/overtake bonuses on top of a likely strong finish, so he gets the Captain doubling. Gasly (shock pole) and Colapinto (P7) both give Alpine a strong both-in-Q3 constructor bonus at a fraction of the cost of the top teams. Leclerc capitalizes on Ferrari's extra home-race motivation from P3, while Bortoleto is a cheap value play with real position-gain upside from P10 on a slipstream-friendly circuit. Cadillac is included purely as a budget-balancing constructor.",
+      "notes": "This is the tool's own regenerated output, produced live via LangGraph (load_static_context -> fetch_live_conditions -> propose_team -> validate_budget), fed the confirmed real grid instead of pre-race speculation. On the first attempt with a longer, more fact-dense question the pipeline failed to produce a parseable team on all 3 tries (0 drivers parsed) -- a real, previously-undocumented robustness gap: response-format compliance appears to degrade as the input question grows longer/denser. Succeeded on a shorter rephrasing (attempt 2/3)."
+    },
+    {
+      "label": "AGGRESSIVE / ANTONELLI-ANCHORED (analyst alternative, not pipeline output)",
+      "drivers": [
+        "Kimi Antonelli",
+        "Lando Norris",
+        "Pierre Gasly",
+        "Franco Colapinto",
+        "Alexander Albon"
+      ],
+      "constructors": [
+        "Alpine",
+        "Racing Bulls"
+      ],
+      "captain": "Kimi Antonelli",
+      "total_cost": 99.4,
+      "confidence_pct": 45,
+      "reasoning": "Antonelli's grid penalty is now a CONFIRMED 30 places (not a speculative 'a penalty'), on a circuit whose own notes say it inflates position-gained/overtake bonuses more than anywhere else on the calendar -- against a driver who is the championship leader with 6 wins and, per circuit notes, in the car considered the pre-season favorite for this specific race. That combination (fastest car + longest legal recovery drive + overtake-friendly track) is arithmetically the highest fantasy-ceiling scenario on the grid, especially doubled/tripled via Captain. Gasly and Colapinto add cheap, already-banked qualifying points plus Alpine's Q3 constructor bonus. Albon is the cheapest of the three back-of-grid cars, adding a second low-cost position-gain lottery ticket.",
+      "risk_flagged": "Three cars (Antonelli, Lawson, Albon), not two, are now confirmed bunched at the back -- more traffic to fight through each other before reaching backmarkers than the pre-qualifying formations assumed, which could blunt Antonelli's early clean-air overtaking versus a simpler two-car-penalty scenario. This is a genuine new risk the pre-qualifying predictions.json did not have information about."
+    }
+  ],
+  "live_conditions_summary": "Hot, sunny, dry race day forecast reconfirmed. Qualifying is now historical fact, not a forecast: Gasly's pole was a genuine shock (Alpine's first since its 2021 rebrand from Renault, Gasly's first ever), Piastri picked up a 3-place grid penalty for impeding Lawson in Q2, and Antonelli/Lawson/Albon are all confirmed serving power-unit-related back-of-grid penalties (Antonelli's specifically quantified at 30 places).",
+  "backtest_basis": "Same backtest lineage as predictions/2026-09-06_italian_gp.json (Zandvoort backtest: 5/6 top-6 overlap, 2/3 podium, wrong winner; hot-streak-weighting prompt fix applied but NOT yet re-validated against a second held-out race). The grid-position input to this revision is now REAL, confirmed data rather than a forecast -- only the race-day outcome (who converts grid position into points) remains genuinely uncertain, and the system's track record for forecasting THAT specific step still rests on the single n=1 Zandvoort backtest.",
+  "actual_result": {
+    "finishing_order": [
+      "Kimi Antonelli",
+      "George Russell",
+      "Max Verstappen",
+      "Lando Norris",
+      "Oscar Piastri",
+      "Lewis Hamilton",
+      "Pierre Gasly",
+      "Arvid Lindblad",
+      "Franco Colapinto",
+      "Yuki Tsunoda",
+      "Gabriel Bortoleto",
+      "Nico Hulkenberg",
+      "Carlos Sainz",
+      "Liam Lawson",
+      "Oliver Bearman",
+      "Esteban Ocon",
+      "Alexander Albon",
+      "Sergio Perez",
+      "Valtteri Bottas"
+    ],
+    "dnfs": [
+      "Lance Stroll",
+      "Fernando Alonso",
+      "Charles Leclerc"
+    ],
+    "penalties_or_verdicts": "Perez: 5s post-race penalty. Leclerc: heavy crash at Parabolica lap 2, red flag, DNF."
+  },
+  "scoring": {
+    "PIPELINE-GENERATED (src/team_builder.py, re-run with confirmed post-qualifying grid)": {
+      "top6_overlap": "1/5",
+      "captain_finishing_position": 4,
+      "captain_scored_well": true
+    },
+    "AGGRESSIVE / ANTONELLI-ANCHORED (analyst alternative, not pipeline output)": {
+      "top6_overlap": "2/5",
+      "captain_finishing_position": 1,
+      "captain_scored_well": true
+    }
+  }
+}

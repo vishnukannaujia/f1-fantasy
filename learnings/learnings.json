@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "added": "2026-09-05",
+    "confidence": "preliminary",
+    "race_count": 1,
+    "refines": null,
+    "source": "Held-out backtest against the real Dutch GP / Zandvoort result (eval/eval_prediction_backtest.py)",
+    "finding": "The reasoning process correctly identified 5/6 of the real top-6 finishers and 2/3 of the podium, but predicted the wrong race winner. Its own stated reasoning explicitly discounted a driver's just-happened win as 'a one-off rather than sustained pace' -- that driver (Norris) went on to win the next race too.",
+    "lesson": "Weight a driver's IMMEDIATE recent form (their last 1-2 races) at least as heavily as their season-long championship position. A multi-race win streak is a genuine momentum signal, not something to explain away in favor of a more 'consistent' season-long points leader."
+  },
+  {
+    "id": 2,
+    "added": "2026-09-06",
+    "confidence": "preliminary",
+    "race_count": 1,
+    "refines": null,
+    "source": "Real scored result: 2026 Italian Grand Prix (eval/predictions_tracker.py)",
+    "finding": "Two formations (AGGRESSIVE and WINNABILITY) explicitly reasoned that Antonelli's \"confirmed\" grid penalty put him at \"back-of-grid\"/P22, when the actual confirmed penalty (30-place) placed him at P19 -- a materially better starting slot, on a track where he still won. The reasoning treated \"penalty confirmed\" as equivalent to \"starts last\" without checking the actual resulting grid position.",
+    "lesson": "When a driver has a confirmed grid penalty, always calculate/verify the actual resulting starting position from the penalty size and grid order, rather than assuming \"back of grid.\" A smaller penalty gap to the front than assumed can mean the ceiling play is even stronger (fewer cars to pass, more fresh pace), so get the exact number right before sizing conviction."
+  },
+  {
+    "id": 3,
+    "added": "2026-09-06",
+    "confidence": "preliminary",
+    "race_count": 1,
+    "refines": 1,
+    "source": "Real scored result: 2026 Italian Grand Prix (eval/predictions_tracker.py)",
+    "finding": "Norris was captained by two formations purely on his multi-race win streak (learning #1), yet finished P4, beaten by Antonelli, Russell, and Verstappen -- none of whom were riding a similar streak. The formations that discounted streak-momentum in favor of a penalty-affected but structurally faster car (dominant Mercedes at a slipstream track) captured the actual winner instead.",
+    "lesson": "Weight recent win-streak momentum heavily (per learning #1), but discount it specifically when a rival car has a track-specific structural advantage (e.g., a much faster car on a low-drag/high-overtake circuit, or a grid-penalty-driven fresh-tire/fuel advantage) that historically outweighs streak momentum at that circuit type -- treat momentum as one input to be weighed against car/track fit, not an automatic top pick."
+  }
+]
