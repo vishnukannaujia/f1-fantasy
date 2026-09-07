@@ -13,7 +13,7 @@ flowchart TD
 
     subgraph STATIC["Static Knowledge (data/raw/*.txt)"]
         RULES["01_fantasy_scoring_rules.txt"]:::static
-        CIRCUIT["06_monza_circuit_notes.txt<br/>+ per-circuit profiles (future)"]:::static
+        CIRCUIT["circuit notes, one file per race weekend<br/>current: 07_madrid_circuit_notes.txt<br/>past races kept as history (e.g. 06_monza_...)"]:::static
         PRICES["02_driver_prices.txt - 03_constructor_prices.txt<br/>04_championship_standings.txt - 05_recent_form.txt"]:::structured
     end
 
@@ -166,8 +166,6 @@ deliberately NOT added.
   sibling project `rag-demo` has a dedicated red-team harness for exactly this class of risk in
   retrieved content; this project has not been threat-modeled at all yet. Lower stakes here (personal
   tool, not production), but a real gap, not an oversight to hide.
-- **No error handling** if `fetch_live_conditions`'s web search call fails (network error, rate limit,
-  empty result) -- an exception there currently crashes the whole graph rather than degrading gracefully.
 - **Langfuse is wired but not key-verified.** `src/observability.py`'s Langfuse integration (callbacks,
   session correlation) has been tested against the no-keys fallback path (graceful no-op) but never
   against a real captured trace -- `LANGFUSE_PUBLIC_KEY`/`LANGFUSE_SECRET_KEY` were never actually added

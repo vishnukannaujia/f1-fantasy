@@ -176,9 +176,21 @@ def load_static_context(state: GraphState) -> GraphState:
     }
 
 
+NO_LIVE_CONDITIONS_MESSAGE = (
+    "No live weather/news data available for this run (the web_search call failed or returned "
+    "nothing) -- reason about the race using only the static context above, and note in your "
+    "REASONING that live conditions could not be checked this time."
+)
+
+
 @traceable(name="fetch_live_conditions (raw anthropic SDK, not auto-traced by LangChain)")
 @observe(name="fetch_live_conditions")
 def fetch_live_conditions(state: GraphState) -> GraphState:
+    """Live web search is a genuinely flaky dependency (network errors, rate limits,
+    timeouts) -- unlike the deterministic nodes elsewhere in this graph, a failure
+    here should degrade the run (proceed on static context alone) rather than crash
+    the whole team-building request. See ARCHITECTURE.md known gaps for why this
+    didn't exist until now."""
     client = anthropic.Anthropic()
     query = (
         f"Search the web for two things about the {RACE_NAME} at {RACE_LOCATION} on {RACE_DATE}: "
@@ -186,13 +198,23 @@ def fetch_live_conditions(state: GraphState) -> GraphState:
         f"few days (practice session incidents, penalties, grid changes, mechanical issues) that "
         f"could affect this race weekend. Summarize both concisely."
     )
-    resp = client.messages.create(
-        model=MODEL_NAME,
-        max_tokens=1024,
-        tools=[{"type": "web_search_20250305", "name": "web_search", "max_uses": 3}],
-        messages=[{"role": "user", "content": query}],
-    )
+    try:
+        resp = client.messages.create(
+            model=MODEL_NAME,
+            max_tokens=1024,
+            tools=[{"type": "web_search_20250305", "name": "web_search", "max_uses": 3}],
+            messages=[{"role": "user", "content": query}],
+            timeout=30.0,
+        )
+    except anthropic.APIError as exc:
+        print(f"  [fetch_live_conditions] web_search call failed ({exc.__class__.__name__}: {exc}) -- proceeding without live conditions")
+        return {**state, "live_conditions": NO_LIVE_CONDITIONS_MESSAGE}
+
     live_text = "".join(block.text for block in resp.content if getattr(block, "type", None) == "text")
+    if not live_text.strip():
+        print("  [fetch_live_conditions] web_search returned no usable text -- proceeding without live conditions")
+        return {**state, "live_conditions": NO_LIVE_CONDITIONS_MESSAGE}
+
     print(f"  [fetch_live_conditions] retrieved {len(live_text)} chars of live weather/news context")
     return {**state, "live_conditions": live_text}
 
