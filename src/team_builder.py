@@ -26,6 +26,7 @@ import json
 import os
 import re
 import sys
+import uuid
 from pathlib import Path
 from typing import List, Optional, TypedDict
 
@@ -36,7 +37,7 @@ from langfuse import observe
 from langgraph.graph import END, StateGraph
 from langsmith import traceable
 
-from observability import langfuse_callbacks
+from observability import langfuse_callbacks, langfuse_session, langsmith_session_metadata
 
 from f1_data import parse_constructor_prices, parse_driver_prices
 
@@ -406,13 +407,27 @@ def run_team_builder_full(question: str) -> dict:
     prediction record for later scoring against the real result) should use
     this instead of run_team_builder."""
     app = build_graph()
+    # A shared session_id ties the LangSmith trace and the Langfuse trace for
+    # THIS call together as the same logical run, even amid other concurrent
+    # calls -- the two systems don't share an ID space on their own.
+    # run_id additionally pins the exact LangSmith trace ID up front, so it's
+    # known before the call finishes rather than searched for afterward.
+    session_id = str(uuid.uuid4())
+    run_id = uuid.uuid4()
     # LangGraph's compiled app.invoke() is already auto-traced by LangSmith
     # (it's built on LangChain's Runnable interface) whenever LANGSMITH_TRACING
     # is set -- no @traceable wrapper needed here, just a readable root name
     # instead of the generic default so traces are findable by question asked.
     # Langfuse needs the explicit callback attached, added here alongside it.
-    config = {"run_name": f"team_builder: {question[:60]}", "callbacks": langfuse_callbacks()}
-    return app.invoke({"question": question, "retries": 0, "validation_errors": []}, config=config)
+    config = {
+        "run_name": f"team_builder: {question[:60]}",
+        "run_id": run_id,
+        "callbacks": langfuse_callbacks(),
+        "metadata": langsmith_session_metadata(session_id),
+    }
+    print(f"  [tracing] session_id={session_id} langsmith_run_id={run_id}")
+    with langfuse_session(session_id):
+        return app.invoke({"question": question, "retries": 0, "validation_errors": []}, config=config)
 
 
 def run_team_builder(question: str) -> str:

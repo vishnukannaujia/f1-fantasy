@@ -16,6 +16,7 @@ Both are opt-in via env vars and off by default -- tracing stays fully absent
 with zero config, matching the project's existing LANGSMITH_TRACING pattern.
 """
 
+import contextlib
 import os
 
 
@@ -34,3 +35,33 @@ def langfuse_callbacks() -> list:
     empty (a no-op) when Langfuse isn't configured."""
     handler = get_langfuse_handler()
     return [handler] if handler else []
+
+
+def langsmith_session_metadata(session_id: str) -> dict:
+    """LangSmith has no first-class 'session' field the way Langfuse does --
+    its own "session" is actually just its old name for "project". The
+    equivalent here is ordinary searchable metadata: filter the LangSmith UI
+    on `metadata.session_id = <value>` to find the matching trace."""
+    return {"session_id": session_id}
+
+
+def langfuse_session(session_id: str):
+    """Context manager to wrap an invoke() call so every observation Langfuse
+    records inside it (including from the LangChain CallbackHandler) is
+    tagged with the same session_id -- a real no-op (contextlib.nullcontext)
+    when Langfuse isn't configured, not a conditional branch callers need to
+    write themselves.
+
+    Usage:
+        session_id = str(uuid.uuid4())
+        with langfuse_session(session_id):
+            result = app.invoke(inputs, config={
+                "metadata": langsmith_session_metadata(session_id),
+                "callbacks": langfuse_callbacks(),
+            })
+    """
+    if not (os.environ.get("LANGFUSE_PUBLIC_KEY") and os.environ.get("LANGFUSE_SECRET_KEY")):
+        return contextlib.nullcontext()
+    from langfuse import propagate_attributes
+
+    return propagate_attributes(session_id=session_id)
