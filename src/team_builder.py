@@ -105,19 +105,12 @@ def _read(name: str) -> str:
 LEARNINGS_PATH = ROOT / "learnings" / "learnings.json"
 
 
-def load_learnings_text() -> str:
-    """Learnings accumulated by eval/learnings_loop.py from real scored races
-    -- this is the actual feedback loop: a new lesson appended to
-    learnings.json is picked up here automatically, on the very next call,
-    with no code change. Contrast with how the very first lesson (from the
-    Zandvoort backtest) got into the system: hand-edited directly into this
-    file's prompt string. That approach doesn't scale past one lesson."""
-    if not LEARNINGS_PATH.exists():
-        return ""
-    learnings = json.loads(LEARNINGS_PATH.read_text())
-    if not learnings:
-        return ""
-
+def render_learnings(learnings: list) -> str:
+    """Pure rendering/weighting logic, split out from load_learnings_text() so
+    it's unit-testable without touching the filesystem -- given a list of
+    learning dicts (the parsed contents of learnings.json), not a path.
+    Assumes `learnings` is non-empty; the empty/missing-file cases are handled
+    by the caller."""
     # Weight by evidence, not equally -- with only a handful of races scored so
     # far, treating every learning as an unconditional rule risks overfitting to
     # single-race noise. Recency gets a mild nudge (the competitive order shifts
@@ -145,6 +138,21 @@ def load_learnings_text() -> str:
             tag += f", refines lesson #{entry['refines']}"
         lines.append(f"- [{tag}] {entry['lesson']}")
     return "\n".join(lines)
+
+
+def load_learnings_text() -> str:
+    """Learnings accumulated by eval/learnings_loop.py from real scored races
+    -- this is the actual feedback loop: a new lesson appended to
+    learnings.json is picked up here automatically, on the very next call,
+    with no code change. Contrast with how the very first lesson (from the
+    Zandvoort backtest) got into the system: hand-edited directly into this
+    file's prompt string. That approach doesn't scale past one lesson."""
+    if not LEARNINGS_PATH.exists():
+        return ""
+    learnings = json.loads(LEARNINGS_PATH.read_text())
+    if not learnings:
+        return ""
+    return render_learnings(learnings)
 
 
 def load_static_context(state: GraphState) -> GraphState:
