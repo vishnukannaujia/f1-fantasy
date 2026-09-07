@@ -30,6 +30,15 @@ a win). None of that would have surfaced without actually running the eval and l
 
 ## Decisions actually made via these evals (not picked on theory)
 
+**Re-verified 2026-09-07** after the corpus changed materially (Madrid circuit notes added, standings
+and recent-form files rewritten with real post-Monza data, not the original 4-file corpus these numbers
+were first measured against): `eval_chunking.py` and `eval_chunking_bakeoff.py` both re-run, numbers
+below unchanged (recall@4=100% for the current chunking strategy, same relative ranking across all 9
+strategies). The design decisions below survive a real corpus change, not just the original snapshot.
+The embedding-model and reranking bakeoffs below were NOT re-run this pass — neither has a persisted,
+re-runnable script (both were one-off comparisons at the time); their conclusions are carried forward as
+still-current but unverified against the new corpus specifically.
+
 **Chunking strategy** — paragraph-boundary splitting with a corpus-derived dynamic cap, not any fixed
 `chunk_size`. `RecursiveCharacterTextSplitter` at a fixed size always *merges* adjacent short splits back
 together, so no single size worked across files with naturally different paragraph lengths. Sentence-level
