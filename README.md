@@ -80,9 +80,13 @@ the concrete decisions each one drove. Quick reference:
 ```bash
 python eval/eval_chunking.py             # chunking: structural checks + recall@k (currently recall@4=100%)
 python eval/eval_chunking_bakeoff.py     # compares 9 chunking strategies head-to-head
-python eval/eval_team_builder_logic.py   # parsing + budget-math unit checks, no LLM calls (19/19 pass)
+python eval/eval_embedding_bakeoff.py    # compares 3 embedding models head-to-head
+python eval/eval_reranking.py            # tests cross-encoder reranking, currently rejected with evidence
+python eval/eval_team_builder_logic.py   # parsing + budget-math + learnings-weighting unit checks (30/30 pass)
 python eval/eval_generation.py           # does the final ANSWER state the right fact, not just retrieval (10/10 pass)
 python eval/eval_quality_gate.py         # similarity-score threshold + deterministic "skip the LLM" gate (7/7 pass)
+python eval/eval_routing_logic.py        # web/app.py's qa-vs-team_builder routing contract (15/15 pass)
+python eval/eval_prompt_injection.py     # adversarial live-search content can't hijack propose_team (6/6 pass)
 python eval/eval_prediction_backtest.py  # held-out: predict a past race, score vs. the real result
 python eval/predictions_tracker.py summary   # track record across every race scored so far
 ```
@@ -108,12 +112,17 @@ web/app.py                 local Flask chat UI, routes to chains.py or team_buil
 studio_graph.py, langgraph.json   LangGraph Studio config (python -m langgraph dev)
 eval/eval_chunking.py      structural + retrieval-quality eval for the chunking layer
 eval/eval_chunking_bakeoff.py     9-way chunking strategy comparison
-eval/eval_team_builder_logic.py   unit checks for proposal parsing + budget validation
+eval/eval_embedding_bakeoff.py    3-way embedding model comparison
+eval/eval_reranking.py     cross-encoder reranking test, currently rejected with evidence
+eval/eval_team_builder_logic.py   unit checks for proposal parsing + budget validation + learnings weighting
 eval/eval_generation.py    generation-quality eval (answer correctness, not just retrieval)
 eval/eval_quality_gate.py  score-threshold retriever + deterministic "skip the LLM" gate
+eval/eval_routing_logic.py web/app.py's qa-vs-team_builder routing contract
+eval/eval_prompt_injection.py     adversarial live-search content vs. propose_team
 eval/eval_prediction_backtest.py  held-out race-outcome backtest
 eval/predictions_tracker.py       save/score predictions against real results, ongoing
 eval/learnings_loop.py     proposes evidence-weighted lessons from a scored prediction
+eval/eval_history.py       shared helper: appends each eval run's pass/total to eval_history.jsonl
 chroma_db/                 persisted vector store (gitignored, created by ingest.py)
 ARCHITECTURE.md            diagram + design rationale + chunking/embedding reference + known gaps
 EVALS.md                   every eval script + the decisions each one drove

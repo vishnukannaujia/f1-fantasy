@@ -16,6 +16,8 @@ a win). None of that would have surfaced without actually running the eval and l
 |---|---|---|---|
 | `eval/eval_chunking.py` | **Chunking layer.** Layer 1 (structural, no embeddings): every parsed driver/constructor maps to exactly one row chunk, every prose chunk respects the dynamic cap. Layer 2 (retrieval): recall@k against 15 hand-labeled real questions, including two deliberate "collision" cases (sprint vs. race DNF, sprint vs. race fastest lap) built to stress-test disambiguation. | No (embeddings only) | recall@1=93%, **recall@4=100%** (production k), recall@8=100% |
 | `eval/eval_chunking_bakeoff.py` | **Chunking strategy comparison.** Tests 9 chunking strategies (fixed-size at 3 sizes, token-based, sentence-based, structure-aware/current, semantic embedding-breakpoint, sliding window, agentic/LLM-proposed) against the exact same 15-query set, holding everything else constant. | Yes (agentic strategy only) | Current approach ties for best on recall@4 (100%) and wins on every secondary axis (cost, interpretability, no manual tuning) |
+| `eval/eval_embedding_bakeoff.py` | **Embedding model comparison.** Tests 3 models (MiniLM small, MPNet larger-general-purpose, BGE-large retrieval-tuned) against the same 15-query set, chunking held constant at the current production strategy. Promoted from a one-off comparison to a persisted script so the conclusion can be re-verified as the corpus grows. | No (embeddings only) | BGE-large wins recall@1 (93% vs. 80%/53%); recall@4/8 saturated at 100% for all three |
+| `eval/eval_reranking.py` | **Cross-encoder reranking test.** Retrieves top-10 via the production bi-encoder, reranks with `cross-encoder/ms-marco-MiniLM-L-6-v2`, compares recall@1 before/after. Promoted from a one-off comparison to a persisted script for the same reason as the embedding bakeoff — a rejected-with-evidence result deserves to stay re-verifiable, not just written down once. | No (a reranker is not an LLM call) | Net recall@1 worse (14/15 → 13/15) on the current corpus — reproduces the same negation-handling failure found originally; still rejected for production |
 | `eval/eval_team_builder_logic.py` | **Parsing + budget math + learnings-loop weighting.** `_parse_proposal`, `_lookup`, `validate_budget`, `route_after_validation` against hand-built fake proposals (valid, over-budget, wrong roster size, unknown driver name, captain outside roster). Also `render_learnings` — the evidence-weighting logic that was refactored out of `load_learnings_text()` specifically to make it testable without touching the filesystem: confidence/evidence-count tagging, defaults when fields are missing, `refines` tags appearing only where set, oldest-added-first ordering (the mechanism behind the recency nudge), and that the anti-overfitting instructions themselves are actually present in the rendered text, not just documented as intent in a comment. Pure Python logic — a bug here would silently corrupt every team recommendation, or silently break the one thing standing between "learn from mistakes" and "overfit to the last race," regardless of how good the LLM reasoning is. | No | 30/30 checks pass |
 | `eval/eval_generation.py` | **Generation quality**, not just retrieval — does the FINAL answer state the right fact (`eval_chunking.py` only checks whether the right chunk was retrieved, not what the model did with it). Includes one deliberately out-of-corpus question (Anthropic's financials) to check the model declines rather than hallucinates; needed an LLM judge after three straight heuristic/regex attempts produced false negatives from natural phrasing variance. | Yes | 10/10 pass |
 | `eval/eval_quality_gate.py` | **The similarity-score-threshold retriever and its deterministic "skip the LLM" short-circuit** in `chains.py`. Verifies clearly off-topic queries retrieve zero docs and the chain returns `NOT_FOUND_MESSAGE` verbatim (no LLM call needed to check this — the gate itself prevents one), and that legitimate + topically-adjacent-but-factually-absent queries still retrieve normally. | No (even for the off-topic cases — that's the point of the gate) | 7/7 pass |
@@ -38,9 +40,15 @@ and recent-form files rewritten with real post-Monza data, not the original 4-fi
 were first measured against): `eval_chunking.py` and `eval_chunking_bakeoff.py` both re-run, numbers
 below unchanged (recall@4=100% for the current chunking strategy, same relative ranking across all 9
 strategies). The design decisions below survive a real corpus change, not just the original snapshot.
-The embedding-model and reranking bakeoffs below were NOT re-run this pass — neither has a persisted,
-re-runnable script (both were one-off comparisons at the time); their conclusions are carried forward as
-still-current but unverified against the new corpus specifically.
+
+**Embedding-model and reranking bakeoffs promoted to persisted scripts, 2026-09-08** — both were
+originally one-off comparisons with no standing script; extracted into `eval/eval_embedding_bakeoff.py`
+and `eval/eval_reranking.py` so either conclusion can be re-verified any time the corpus changes, the
+same way `eval_chunking_bakeoff.py` already works. Both re-run against the current (post-Madrid) corpus
+immediately after being written — see the updated numbers in each section below. The embedding-model
+ranking held exactly (BGE-large still wins); the reranking rejection held too, though the specific
+numbers shifted slightly (see that section) — worth noting as a real example of a rejected conclusion
+being re-verified rather than just re-asserted.
 
 **Chunking strategy** — paragraph-boundary splitting with a corpus-derived dynamic cap, not any fixed
 `chunk_size`. `RecursiveCharacterTextSplitter` at a fixed size always *merges* adjacent short splits back
@@ -48,18 +56,23 @@ together, so no single size worked across files with naturally different paragra
 splitting was tested and dropped recall@4 to 53% — several sentences in this corpus depend on a heading or
 neighboring bullet for their meaning, and splitting them apart loses that. See `eval_chunking_bakeoff.py`.
 
-**Embedding model** — `BAAI/bge-large-en-v1.5`, chosen via a real head-to-head, not by reputation:
+**Embedding model** — `BAAI/bge-large-en-v1.5`, chosen via a real head-to-head, not by reputation. See
+`eval/eval_embedding_bakeoff.py` (persisted script, chunking held constant at the current production
+strategy):
 
-| Model | Dims | Type | recall@1 |
-|---|---|---|---|
-| `all-MiniLM-L6-v2` (original) | 384 | Symmetric similarity | 60% |
-| `all-mpnet-base-v2` | 768 | Symmetric similarity | 80% |
-| **`bge-large-en-v1.5` (current)** | 1024 | **Retrieval-tuned, asymmetric** | **93%** |
+| Model | Dims | Type | recall@1 (original 4-file corpus) | recall@1 (current, post-Madrid corpus) |
+|---|---|---|---|---|
+| `all-MiniLM-L6-v2` | 384 | Symmetric similarity | 60% | 53% |
+| `all-mpnet-base-v2` | 768 | Symmetric similarity | 80% | 80% |
+| **`bge-large-en-v1.5` (current)** | 1024 | **Retrieval-tuned, asymmetric** | **93%** | **93%** |
 
 recall@4/8 were already at 100% throughout, so recall@1 was the only axis that differentiated these three.
 The jump to BGE isn't explained by size alone — it's trained for asymmetric query-to-passage retrieval,
 which is structurally what `chains.py` does (a short question matched against a longer chunk), unlike
-MPNet's general sentence-similarity training.
+MPNet's general sentence-similarity training. MiniLM's number moved with corpus growth (more chunks to
+confuse a weaker model) while BGE and MPNet held steady — the ranking and the production choice are
+unaffected either way, but it's a real example of why "current corpus" numbers, not just originally-
+measured ones, matter for a bakeoff someone might actually rely on later.
 
 **Distance metric** — cosine, declared explicitly (`collection_metadata={"hnsw:space": "cosine"}` in
 `ingest.py`), not left as Chroma's undeclared default (squared L2). Tested all three options Chroma
@@ -84,15 +97,22 @@ deterministic `NOT_FOUND_MESSAGE` and skips the LLM call entirely, rather than s
 prompt and hoping the model notices. Cheaper, faster, and doesn't depend on the model reliably catching an
 edge case unprompted.
 
-**Cross-encoder reranking — tested, and explicitly NOT added.** Retrieved top-10 via the bi-encoder,
-reranked with `cross-encoder/ms-marco-MiniLM-L-6-v2`, compared recall@1 before/after on the same 15
-queries: reranking fixed one case but broke a different one that was previously correct — net recall@1
-identical (14/15 either way). Inspected the regression directly: the reranker scored a sprint-specific
-chunk *higher* than the correct answer for a query that explicitly said "not a sprint," over-weighting
-lexical overlap with racing terminology without handling the negation correctly. A general-purpose
-web-search-trained reranker isn't a clean win on this narrow, jargon-dense, negation-sensitive corpus —
-concrete evidence, not a guess, for why this wasn't wired into production. This is exactly as legitimate
-an outcome of testing as a positive result would have been.
+**Cross-encoder reranking — tested, and explicitly NOT added.** See `eval/eval_reranking.py` (persisted
+script). Retrieved top-10 via the bi-encoder, reranked with `cross-encoder/ms-marco-MiniLM-L-6-v2`,
+compared recall@1 before/after on the same 15 queries.
+
+Original test (4-file corpus): reranking fixed one case but broke a different one that was previously
+correct — net recall@1 identical (14/15 either way). Re-run 2026-09-08 against the current (post-Madrid)
+corpus: this time reranking broke one case and fixed none — net recall@1 **worse** (14/15 → 13/15), not
+merely flat. Both runs broke the SAME case for the SAME reason: the reranker scores a sprint-specific
+chunk *higher* than the correct answer for the query "What is the DNF penalty in a normal Grand Prix, not
+a sprint?", over-weighting lexical overlap with racing terminology without handling the negation
+correctly. A general-purpose web-search-trained reranker isn't a clean win on this narrow, jargon-dense,
+negation-sensitive corpus — concrete, twice-reproduced evidence, not a guess, for why this wasn't wired
+into production. That the second run came out net-negative rather than net-zero is itself useful
+information: a "wash" result can look like it's on the fence, but the recurring, specific failure
+mechanism was never on the fence — this is exactly as legitimate an outcome of testing as a positive
+result would have been, and re-running it strengthened rather than weakened the case for rejection.
 
 ## A concrete finding from the backtest, not just a pass/fail number
 
