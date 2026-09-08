@@ -133,6 +133,20 @@ EVALS.md                   every eval script + the decisions each one drove
 See **[ARCHITECTURE.md § Known gaps](ARCHITECTURE.md#known-gaps-honest-as-of-last-update)** for the
 current honest list -- as of last update: no automated weekly data refresh, the backtest-driven prompt
 fix has been validated against two real races (Zandvoort backtest + the scored Monza result) but not yet
-a third, no hardening against indirect prompt injection via live web search content, Langfuse is wired
-but never key-verified against a real trace, and the embedding-space visualization artifact's hover
-tooltip doesn't work (confirmed via a real browser check, not yet root-caused).
+a third, prompt-injection hardening on live web search content is basic (two tested adversarial cases,
+not red-team-grade coverage), Langfuse is wired but never key-verified against a real trace, and the
+embedding-space visualization artifact's hover tooltip doesn't work (confirmed via a real browser check,
+not yet root-caused).
+
+## Contributing
+
+Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Contributors agree to the
+[CLA](CLA.md) so the project can offer future commercial terms without chasing down every contributor.
+
+## License
+
+**Apache-2.0** (see `LICENSE` and `NOTICE`) — permissive, with an explicit patent grant. Contributions
+are accepted under a [CLA](CLA.md) that preserves the option to dual-license commercially in the future.
+
+This is a personal project for playing the official F1 Fantasy game and is not affiliated with,
+endorsed by, or sponsored by Formula 1, the FIA, or Formula One World Championship Limited.
