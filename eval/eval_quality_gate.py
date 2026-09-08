@@ -28,6 +28,7 @@ from dotenv import load_dotenv
 load_dotenv(ROOT / ".env")
 
 from chains import NOT_FOUND_MESSAGE, build_rag_chain  # noqa: E402
+from eval_history import record_run  # noqa: E402
 
 # (query, expect_docs -- True if this should retrieve something, False if the
 #  gate should fire, note)
@@ -73,6 +74,7 @@ def main():
             print(f"  chain returned NOT_FOUND_MESSAGE verbatim: {chain_ok}")
         print()
 
+    record_run("eval_quality_gate", passed, len(CASES))
     print(f"{passed}/{len(CASES)} passed")
     if passed < len(CASES):
         sys.exit(1)

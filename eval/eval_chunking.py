@@ -28,6 +28,7 @@ from dotenv import load_dotenv
 
 load_dotenv(ROOT / ".env")
 
+from eval_history import record_run  # noqa: E402
 from f1_data import parse_constructor_prices, parse_driver_prices  # noqa: E402
 from ingest import (  # noqa: E402
     DATA_DIR,
@@ -150,6 +151,9 @@ def main():
     print_report(rows, hits_by_k)
 
     k4_recall = sum(hits_by_k[PRODUCTION_K]) / len(hits_by_k[PRODUCTION_K])
+    passed = len(STRUCTURAL_CHECKS) + sum(hits_by_k[PRODUCTION_K])
+    total = len(STRUCTURAL_CHECKS) + len(hits_by_k[PRODUCTION_K])
+    record_run("eval_chunking", passed, total)
     print()
     if k4_recall < 1.0:
         print(f"FAILED: recall@{PRODUCTION_K} is {k4_recall:.0%} -- below the 100% bar expected for this small, curated corpus.")

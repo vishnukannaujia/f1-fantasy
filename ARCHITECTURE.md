@@ -161,11 +161,14 @@ deliberately NOT added.
   to check it generalizes rather than just patches the cases seen so far. The Spanish GP is also the
   system's first prediction at a circuit with zero historical race data of any kind, which is a new kind
   of uncertainty the backtest methodology hasn't had to account for before.
-- **No hardening against indirect prompt injection via live web search.** `fetch_live_conditions`
-  concatenates live web content directly into the `propose_team` prompt with no sanitization. The
-  sibling project `rag-demo` has a dedicated red-team harness for exactly this class of risk in
-  retrieved content; this project has not been threat-modeled at all yet. Lower stakes here (personal
-  tool, not production), but a real gap, not an oversight to hide.
+- **Prompt-injection hardening is basic, not red-team-grade.** `propose_team` now wraps
+  `fetch_live_conditions`'s live web content in explicit delimiters plus a distrust instruction
+  (`_wrap_live_conditions`), and `eval/eval_prompt_injection.py` tests two adversarial cases (a format-
+  hijack attempt, a forced-Captain-pick attempt) -- both currently fail to hijack the output. That's
+  meaningfully more than nothing, but it's still one eval author's two guesses at what an attack might
+  look like, not the systematic, adversarially-generated coverage the sibling project `rag-demo`'s
+  dedicated red-team harness provides for retrieved-document injection. Lower stakes here (personal tool,
+  not production), but still worth naming honestly rather than calling this "solved."
 - **Langfuse is wired but not key-verified.** `src/observability.py`'s Langfuse integration (callbacks,
   session correlation) has been tested against the no-keys fallback path (graceful no-op) but never
   against a real captured trace -- `LANGFUSE_PUBLIC_KEY`/`LANGFUSE_SECRET_KEY` were never actually added

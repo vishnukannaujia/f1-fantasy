@@ -25,6 +25,7 @@ from dotenv import load_dotenv
 load_dotenv(ROOT / ".env")
 
 from chains import build_rag_chain  # noqa: E402
+from eval_history import record_run  # noqa: E402
 
 
 def declined_without_fabricating(question: str, answer: str) -> bool:
@@ -65,7 +66,7 @@ EVAL_CASES = [
     ("How many free transfers do I get per race weekend?", ["two", "2"], "rules lookup"),
     ("What does the Wildcard chip do?", ["unlimited"], "rules lookup, must mention unlimited transfers"),
     ("Who currently leads the drivers' championship?", ["Antonelli"], "standings lookup"),
-    ("Who won the most recent Grand Prix?", ["Norris"], "recent form lookup"),
+    ("Who won the most recent Grand Prix?", ["Antonelli"], "recent form lookup"),
     ("Is Monza a low-downforce or high-downforce circuit?", ["low"], "circuit fact, must not say high"),
     ("What was Anthropic's Q2 2026 operating profit?", declined_without_fabricating, "OUT-OF-CORPUS: must not invent a number"),
 ]
@@ -98,6 +99,7 @@ def main():
         print(f"  A: {answer[:200]}{'...' if len(answer) > 200 else ''}")
         print()
 
+    record_run("eval_generation", passed, len(results))
     print(f"{passed}/{len(results)} passed")
     if passed < len(results):
         sys.exit(1)

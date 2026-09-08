@@ -24,6 +24,7 @@ from dotenv import load_dotenv
 
 load_dotenv(ROOT / ".env")
 
+from eval_history import record_run  # noqa: E402
 from team_builder import (  # noqa: E402
     BUDGET_CAP,
     MAX_RETRIES,
@@ -249,6 +250,7 @@ def main():
     ]:
         fn()
 
+    record_run("eval_team_builder_logic", CHECKS_RUN - len(CHECKS_FAILED), CHECKS_RUN)
     print(f"\n{CHECKS_RUN - len(CHECKS_FAILED)}/{CHECKS_RUN} checks passed")
     if CHECKS_FAILED:
         print(f"FAILED: {CHECKS_FAILED}")

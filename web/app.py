@@ -13,8 +13,10 @@ Run:
 Then open http://localhost:5001 in a browser.
 """
 
+import json
 import re
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 from flask import Flask, jsonify, render_template, request
@@ -54,6 +56,25 @@ def is_team_building_request(message: str) -> bool:
     return bool(TEAM_BUILDING_KEYWORDS.search(message))
 
 
+ROUTING_LOG_PATH = ROOT / "logs" / "routing.jsonl"
+
+
+def log_routing_decision(message: str, mode: str) -> None:
+    """Append one line per real request so a change in the qa/team_builder split
+    over time is visible without re-reading the code -- a rising share of one
+    mode after a prompt/UI change is a leading indicator the keyword contract
+    has drifted from what users are actually asking (see agent-harness-
+    components skill, component 1: Scope & task contract, Monitoring)."""
+    ROUTING_LOG_PATH.parent.mkdir(exist_ok=True)
+    entry = {
+        "timestamp": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "mode": mode,
+        "message_preview": message[:200],
+    }
+    with ROUTING_LOG_PATH.open("a") as f:
+        f.write(json.dumps(entry) + "\n")
+
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -66,13 +87,14 @@ def chat():
     if not message:
         return jsonify({"error": "empty message"}), 400
 
+    mode = "team_builder" if is_team_building_request(message) else "qa"
+    log_routing_decision(message, mode)
+
     try:
-        if is_team_building_request(message):
+        if mode == "team_builder":
             answer = run_team_builder(message)
-            mode = "team_builder"
         else:
             answer = get_rag_chain().invoke(message)
-            mode = "qa"
     except Exception as exc:  # noqa: BLE001 -- surface any backend error to the chat UI rather than a raw 500
         return jsonify({"error": str(exc)}), 500
 
